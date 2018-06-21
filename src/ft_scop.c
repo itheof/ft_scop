@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/21 15:03:11 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/21 14:52:19 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 
 #include "libft/stdbool.h"
 #include "libft/print.h"
-#include "ft_scop.h"
 #include "GLFW/glfw3.h"
+
+const char *vertexShaderSource = "";
+
+const char	*fragmentShaderSource = "";
 
 typedef struct	s_env
 {

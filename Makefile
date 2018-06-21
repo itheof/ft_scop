@@ -14,12 +14,12 @@ endif
 CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
-CFLAGS    += -I./inc -I./glfw/include
+CFLAGS    += -I./ -I./inc -I./glfw/include
 
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c)
+SOURCES     = $(NAME:%=%.c) file.c shader.c program.c
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj
@@ -46,7 +46,7 @@ all: $(DEPS) $(NAME)
 
 -include $(DEPS)
 
-$(NAME): %:$(OBJ_PATH)/%.o $(COM_OBJECTS) $(LIBFT) glfw/build/src/libglfw3.a
+$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) glfw/build/src/libglfw3.a
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(LIBFT):
