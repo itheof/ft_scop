@@ -16,6 +16,7 @@
 
 #include "libft/stdbool.h"
 #include "libft/print.h"
+#include "ft_scop.h"
 #include "GLFW/glfw3.h"
 
 const char *vertexShaderSource = "";

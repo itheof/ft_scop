@@ -14,8 +14,6 @@
 
 t_bool	file_open(t_file *dst, char const *path, int oflag)
 {
-	struct stat	buf;
-
 	if ((dst->fd = open(path, oflag)) < 0)
 	{
 		perror("open");
@@ -30,18 +28,22 @@ t_bool	file_open(t_file *dst, char const *path, int oflag)
 	dst->path = path;
 	dst->oflag = oflag;
 	dst->data = NULL;
+	return (true);
 }
 
 t_bool	file_load(t_file *f)
 {
 	if (!(f->statbuf.st_mode & S_IFREG))
 		dprintf(2, "warning: cannot load non-regular file %s\n", f->path);
-	else if ((f->data = malloc(f->statbuf.st_size)) == NULL)
+	else if ((f->data = malloc(f->statbuf.st_size + 1)) == NULL)
 		perror("malloc");
 	else if (read(f->fd, f->data, f->statbuf.st_size) < 0)
 		perror("read");
 	else
+	{
+		f->data[f->statbuf.st_size] = '\0';
 		return (true);
+	}
 	return (false);
 }
 

@@ -24,6 +24,7 @@ static t_shader	g_frag = {
 
 t_bool	program_init(unsigned *id)
 {
+	char 	infoLog[512];
 	int	success;
 
 	if (!shader_init(&g_vert) || !shader_init(&g_frag))
