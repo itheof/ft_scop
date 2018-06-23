@@ -41,7 +41,14 @@ typedef struct	s_file
 t_bool	file_open(t_file *dst, char const *path, int oflag);
 t_bool	file_load(t_file *f);
 void	file_close(t_file *f);
+
 t_bool	program_init(unsigned *id);
+void 	program_setb(unsigned int id, char const *name, t_bool value);
+void 	program_seti(unsigned int id, char const *name, int value);
+void 	program_set2i(unsigned int id, char const *name, int val1, int val2);
+void	program_setf(unsigned int id, char const *name, float value);
+void	program_set2f(unsigned int id, char const *name, float val1, float val2);
+
 t_bool	shader_init(t_shader *shader);
 void	shader_deinit(t_shader *shader);
 

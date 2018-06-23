@@ -44,6 +44,32 @@ t_bool	program_init(unsigned *id)
 	return ((success) != false);
 }
 
-void		program_deinit(unsigned id)
+void 	program_setb(unsigned int id, char const *name, t_bool value)
 {
+    glUniform1i(glGetUniformLocation(id, name), value);
+}
+
+void 	program_seti(unsigned int id, char const *name, int value)
+{
+    glUniform1i(glGetUniformLocation(id, name), value);
+}
+
+void 	program_set2i(unsigned int id, char const *name, int val1, int val2)
+{
+    glUniform2i(glGetUniformLocation(id, name), val1, val2);
+}
+
+void	program_setf(unsigned int id, char const *name, float value)
+{
+    glUniform1f(glGetUniformLocation(id, name), value);
+}
+
+void	program_set2f(unsigned int id, char const *name, float val1, float val2)
+{
+    glUniform2f(glGetUniformLocation(id, name), val1, val2);
+}
+
+void	program_deinit(unsigned id)
+{
+	glDeleteProgram(id);
 }

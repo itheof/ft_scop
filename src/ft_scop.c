@@ -33,6 +33,11 @@ typedef struct	s_env
 	}			buf;
 	unsigned int	current_glprogram;
 	t_bool			wireframe;
+	struct		s_offset
+	{
+		float	x;
+		float	y;
+	}			off;
 }				t_env;
 
 t_env	g_env;
@@ -74,6 +79,19 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 	else if (key == GLFW_KEY_W && action == GLFW_PRESS && mods & GLFW_MOD_CONTROL)
 		toggle_wireframe_mode();
+	else if (key == GLFW_KEY_0 && action == GLFW_PRESS && mods & GLFW_MOD_SUPER)
+	{
+		g_env.off.y = 0;
+		g_env.off.x = 0;
+	}
+	else if (key == GLFW_KEY_UP)
+		g_env.off.y += 0.05;
+	else if (key == GLFW_KEY_DOWN)
+		g_env.off.y -= 0.05;
+	else if (key == GLFW_KEY_LEFT)
+		g_env.off.x -= 0.05;
+	else if (key == GLFW_KEY_RIGHT)
+		g_env.off.x += 0.05;
 	else
 		printf("key: %d scancode %d action %d mods %d\n", key, scancode, action, mods);
 }
@@ -101,6 +119,8 @@ t_bool	init_shaders(void)
 
 t_bool	init(void)
 {
+	g_env.off.x = 0;
+	g_env.off.y = 0;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
         return (false);
@@ -149,10 +169,6 @@ void	render(void)
 	static unsigned int	VAO;
 	static unsigned int	VBO;
 	static unsigned int	EBO;
-	static int	vertexColorLocation;
-
-	float timeValue;
-	float greenValue;
 
 	if (first_run)
 	{
@@ -170,15 +186,12 @@ void	render(void)
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		glGetUniformLocation(g_env.current_glprogram, "ourColor");
 
 		first_run = 0;
 	}
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(g_env.current_glprogram);
-	timeValue = glfwGetTime();
-	greenValue = sin(timeValue) / 2.0f + 0.5f;
-	glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+	program_set2f(g_env.current_glprogram, "off", g_env.off.x, g_env.off.y);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 /*	glBindVertexArray(VAO);
