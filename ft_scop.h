@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:17:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/21 15:02:23 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/23 16:25:30 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,15 @@ typedef	struct	s_shader
 	GLenum		type;
 	char const	*path;
 }				t_shader;
+
+typedef struct	s_texture
+{
+	unsigned		id;
+	char const		*path;
+	unsigned char	*data;
+	int				width;
+	int				height;
+}				t_texture;
 
 typedef struct	s_file
 {
@@ -51,5 +60,9 @@ void	program_set2f(unsigned int id, char const *name, float val1, float val2);
 
 t_bool	shader_init(t_shader *shader);
 void	shader_deinit(t_shader *shader);
+
+t_bool	texture_init(t_texture *t);
+
+unsigned char	*ppm_load(char const *path, int *width, int *height);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:53:47 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/21 14:26:40 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/23 14:12:12 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_bool	file_open(t_file *dst, char const *path, int oflag)
 {
 	if ((dst->fd = open(path, oflag)) < 0)
 	{
-		perror("open");
+		perror(path);
 		return (false);
 	}
 	if (fstat(dst->fd, &dst->statbuf) < 0)

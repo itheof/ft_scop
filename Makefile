@@ -19,7 +19,7 @@ CFLAGS    += -I./ -I./inc -I./glfw/include
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) file.c shader.c program.c
+SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj

@@ -2,3 +2,4 @@ build
 .dep
 .obj
 ft_scop
+**/*.swp
