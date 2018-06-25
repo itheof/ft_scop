@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/23 17:54:21 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/25 18:03:24 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,7 @@ int		main(void)
 	if (!init())
 		return (-1);
 
+	matrix_new_id(4);
     while (!glfwWindowShouldClose(g_env.window))
     {
 		render();
