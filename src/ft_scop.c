@@ -226,7 +226,7 @@ int		main(void)
 	if (!init())
 		return (-1);
 
-	matrix_new_id(4);
+	matrix_dump_2d(matrix_new_id(4, 2));
     while (!glfwWindowShouldClose(g_env.window))
     {
 		render();

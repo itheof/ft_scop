@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_scop.h"
+#include <assert.h>
 
 #define ONE_INDEXED 1
 #define DEBUG
@@ -33,8 +34,10 @@ static void	test_in_range(char letter, size_t x, size_t xmax)
 
 float		*matrix_get_ptr(t_matrix *matrix, t_vector pos)
 {
-	off_t	off;
-
+	float	(*mat4)[matrix->wlen][matrix->zlen][matrix->ylen][matrix->xlen];
+	float	(*mat3)[matrix->zlen][matrix->ylen][matrix->xlen];
+	float	(*mat2)[matrix->ylen][matrix->xlen];
+	float	(*mat1)[matrix->xlen];
 #ifdef DEBUG
 	if (pos.ndim != matrix->ndim)
 	{
@@ -52,17 +55,21 @@ float		*matrix_get_ptr(t_matrix *matrix, t_vector pos)
 		test_in_range('w', pos.w, matrix->wlen);
 #endif
 
-	off = (size_t)pos.x - ONE_INDEXED;
-	if (pos.ndim >= 2)
-		off += matrix->xlen * ((size_t)pos.y - ONE_INDEXED);
-	if (pos.ndim >= 3)
-		off += matrix->ylen * ((size_t)pos.z - ONE_INDEXED);
+	mat1 = (void*)&(matrix->elems);
+	mat2 = (void*)&(matrix->elems);
+	mat3 = (void*)&(matrix->elems);
 	if (pos.ndim >= 4)
-		off += matrix->zlen * ((size_t)pos.w - ONE_INDEXED);
-	printf("%f %f %f %f offset %zu\n", pos.x, pos.y, pos.z, pos.w, off);
-	return (matrix->elems + off);
+	{
+		mat4 = (void*)&(matrix->elems);
+		mat3 = &((*mat4)[(size_t)pos.w - ONE_INDEXED]);
+	}
+	if (pos.ndim >= 3)
+		mat2 = &((*mat3)[(size_t)pos.z - ONE_INDEXED]);
+	if (pos.ndim >= 2)
+		mat1 = &((*mat2)[(size_t)pos.y - ONE_INDEXED]);
+	return (*mat1 + (size_t)pos.x - ONE_INDEXED);
 }
-	
+
 float		matrix_get(t_matrix *matrix, t_vector pos)
 {
 	return (*matrix_get_ptr(matrix, pos));
@@ -71,6 +78,28 @@ float		matrix_get(t_matrix *matrix, t_vector pos)
 void		matrix_set(t_matrix *matrix, t_vector pos, float val)
 {
 	*matrix_get_ptr(matrix, pos) = val;
+}
+
+void		matrix_dump_2d(t_matrix *matrix)
+{
+	size_t	x;
+	size_t	y;
+	float	f;
+
+	assert(matrix->ndim == 2);
+	x = 0;
+	while (x < matrix->xlen)
+	{
+		y = 0;
+		while (y < matrix->ylen)
+		{
+			f = matrix_get(matrix, vec2(x + ONE_INDEXED, y + ONE_INDEXED));
+			dprintf(2, " %f ", f);
+			y++;
+		}
+		dprintf(2, "\n");
+		x++;
+	}
 }
 
 t_matrix	*matrix_new(t_vector size)
@@ -97,29 +126,39 @@ t_matrix	*matrix_new(t_vector size)
 	return (ret);
 }
 
-t_matrix	*matrix_new_id(size_t ndim)
+t_matrix	*matrix_new_id(size_t len, size_t ndim)
 {
 	t_matrix	*ret;
 	t_vector	size;
 	size_t		i;
 
+	assert(ndim < 5);
 	if (ndim == 1)
-		size = vec1(1);
+		size = vec1(len);
 	if (ndim == 2)
-		size = vec2(2, 2);
+		size = vec2(len, len);
 	if (ndim == 3)
-		size = vec3(3, 3, 3);
+		size = vec3(len, len, len);
 	if (ndim == 4)
-		size = vec4(4, 4, 4, 4);
+		size = vec4(len, len, len, len);
 	if ((ret = matrix_new(size)))
 	{
 		i = 0;
-		while (i < ndim)
+		while (i < len)
 		{
-			matrix_set(ret, vec4(ONE_INDEXED + i, ONE_INDEXED + i,
+			if (ndim == 1)
+				matrix_set(ret, vec1(ONE_INDEXED + i), 1);
+			else if (ndim == 2)
+				matrix_set(ret, vec2(ONE_INDEXED + i, ONE_INDEXED + i), 1);
+			else if (ndim == 3)
+				matrix_set(ret, vec3(ONE_INDEXED + i, ONE_INDEXED + i,
+						ONE_INDEXED + i), 1);
+			else
+				matrix_set(ret, vec4(ONE_INDEXED + i, ONE_INDEXED + i,
 						ONE_INDEXED + i, ONE_INDEXED + i), 1);
 			i++;
 		}
 	}
+
 	return (ret);
 }
