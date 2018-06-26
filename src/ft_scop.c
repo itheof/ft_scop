@@ -226,7 +226,16 @@ int		main(void)
 	if (!init())
 		return (-1);
 
-	matrix_dump_2d(matrix_new_id(4, 2));
+	t_matrix	*a;
+	t_matrix	*b;
+	float		aa[] = {4, 2, 0, 0, 8, 1, 0, 1, 0};
+	float		bb[] = {4, 2, 1, 2, 0, 4, 9, 4, 2};
+	a = matrix_new_id(3);
+	memcpy(a->elems, aa, sizeof(aa));
+	b = matrix_new_id(3);
+	memcpy(b->elems, bb, sizeof(bb));
+	
+	matrix_dump_2d(matrix_mult(a, b));
     while (!glfwWindowShouldClose(g_env.window))
     {
 		render();

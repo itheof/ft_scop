@@ -61,9 +61,6 @@ typedef struct	s_matrix
 {
 	size_t	xlen;
 	size_t	ylen;
-	size_t	zlen;
-	size_t	wlen;
-	size_t	ndim;
 	size_t	nelem;
 	float	elems[];
 }				t_matrix;
@@ -87,8 +84,9 @@ t_bool	texture_init(t_texture *t);
 unsigned char	*ppm_load(char const *path, int *width, int *height);
 
 t_matrix	*matrix_new(t_vector size);
-t_matrix	*matrix_new_id(size_t len, size_t ndim);
-void		matrix_dump_2d(t_matrix *matrix);
+t_matrix	*matrix_new_id(size_t len);
+void		matrix_dump(t_matrix *matrix);
+t_matrix	*matrix_mult(t_matrix *left, t_matrix *right);
 
 t_vector	vec1(float x);
 t_vector	vec2(float x, float y);
