@@ -54,7 +54,7 @@ void		matrix_set(t_matrix *matrix, t_vector pos, float val)
 	*matrix_get_ptr(matrix, pos) = val;
 }
 
-void		matrix_dump_2d(t_matrix *matrix)
+void		matrix_dump(t_matrix *matrix)
 {
 	size_t	x;
 	size_t	y;

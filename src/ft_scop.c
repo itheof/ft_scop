@@ -144,6 +144,7 @@ t_bool	init(void)
     }
 	glfwSetKeyCallback(g_env.window, key_callback);
     glfwMakeContextCurrent(g_env.window);
+	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	if (!init_shaders())
 	{
 		ft_putendl_fd("Failed to compile shaders", 2);
@@ -235,7 +236,7 @@ int		main(void)
 	b = matrix_new_id(3);
 	memcpy(b->elems, bb, sizeof(bb));
 	
-	matrix_dump_2d(matrix_mult(a, b));
+	matrix_dump(matrix_mult(a, b));
     while (!glfwWindowShouldClose(g_env.window))
     {
 		render();

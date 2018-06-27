@@ -1,6 +1,6 @@
 NAME         = ft_scop
 CFLAGS      += -g -Wall -Wextra
-CFLAGS      += -std=c11 -pedantic -pedantic-errors
+CFLAGS      += -std=c11
 
 ifeq ($(DEBUG),yes)
 	CFLAGS  += -g3 -O0 -fno-inline -DNOT_CORRECTION
@@ -14,7 +14,7 @@ endif
 CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
-CFLAGS    += -I./ -I./inc -I./glfw/include
+CFLAGS    += -I./ -I./inc
 
 # Sources
 SRC_PATH    = src
@@ -33,12 +33,24 @@ BUILD_DIR   = $(OBJ_PATH) $(OBJ_PATH)/common \
 LIBFT_PATH = libft
 LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
+LDFLAGS   += -L$(LIBFT_PATH) -lft
 
-# FW
-FW		= -framework Cocoa -framework OpenGL -framework IOKit -framework \
+# GLFW
+GLFW_PATH  = glfw
+GLFW       = glfw/build/src/libglfw3.a
+CFLAGS    += -I./glfw/include
+LDFLAGS   += -L glfw/build/src -lglfw3
+
+ifeq ($(UNAME_S),Darwin)
+	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework \
 		  CoreVideo
-
-LDFLAGS   += -L $(LIBFT_PATH) -lft -L glfw/build/src -lglfw3 $(FW)
+else
+	GLAD_PATH = glad
+	GLAD = $(GLAD_PATH)/src/glad.c
+	CPATH = CPATH=$(GLAD_PATH)/include
+	CFLAGS	+= -I $(GLAD_PATH)/include
+	LDFLAGS += `PKG_CONFIG_PATH=glfw/build/src/ pkg-config --libs --static glfw3`
+endif
 
 .SECONDARY: $(OBJECTS)
 
@@ -46,14 +58,14 @@ all: $(DEPS) $(NAME)
 
 -include $(DEPS)
 
-$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) glfw/build/src/libglfw3.a
-	$(CC) $(LDFLAGS) -o $@ $^
+$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) $(GLFW)
+	$(CC) -o $@ $^ $(GLAD) $(CFLAGS) $(LDFLAGS)
 
 $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
 		$(MAKE) -j8 -C $(LIBFT_PATH)
 
-$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common glfw
+$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common $(GLFW_PATH)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(DEP_PATH)/%.d: %.c | $(DEP_PATH)/common
@@ -70,11 +82,17 @@ fclean: clean
 	$(RM) -f $(NAME) $(EXEC_C) $(EXEC_H)
 	$(MAKE) -C $(LIBFT_PATH) fclean
 
-glfw:
+$(GLFW_PATH):
 	git submodule update --init --recursive
 
-glfw/build/src/libglfw3.a: glfw
-	cd glfw && mkdir build && cd build && cmake ../ && make
+$(GLFW): $(GLFW_PATH)
+	cd glfw && mkdir -p build && cd build && cmake ../ && make
+
+$(GLAD_PATH):
+	pip install --user glad
+	python -m glad --generator=c --profile=core --out-path glad
+
+$(GLAD): $(GLAD_PATH)
 
 re: fclean all
 

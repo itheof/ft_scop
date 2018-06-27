@@ -13,15 +13,19 @@
 #ifndef FT_SCOP_H
 # define FT_SCOP_H
 
+# define _POSIX_C_SOURCE 200809L
 # include <ctype.h>
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include "libft/stdbool.h"
 # include "libft/libc.h"
-# include "GLFW/glfw3.h"
+# include <glad/glad.h>
+# include <GLFW/glfw3.h>
 
 typedef	struct	s_shader
 {
