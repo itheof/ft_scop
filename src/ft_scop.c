@@ -20,6 +20,7 @@
 #include "GLFW/glfw3.h"
 
 #define ASSETS_DIR "assets/"
+#define SCROLL_SPEED 0.08
 
 typedef struct	s_env
 {
@@ -31,14 +32,23 @@ typedef struct	s_env
 	}			buf;
 	unsigned int	current_glprogram;
 	t_bool			wireframe;
-	struct		s_offset
-	{
-		float	x;
-		float	y;
-	}			off;
+	t_vector	translate;
+	t_vector	scale;
+	t_matrix	*trans;
 }				t_env;
 
-t_env	g_env;
+static t_env	g_env = {
+	.translate = {
+		.x = 0,
+		.y = 0,
+		.ndim = 2,
+	},
+	.scale = {
+		.x = 1,
+		.y = 1,
+		.ndim = 2,
+	},
+};
 
 static t_texture g_tex_wall = {
 	.path = ASSETS_DIR "wall.ppm",
@@ -51,6 +61,9 @@ void	render(void);
 
 void 	__attribute__ ((noreturn)) cleanup()
 {
+	program_deinit(g_env.current_glprogram);
+	texture_deinit(&g_tex_wall);
+	texture_deinit(&g_tex_face);
 	glfwTerminate();
 	exit(0);
 }
@@ -77,6 +90,21 @@ static void	toggle_wireframe_mode(void)
 	}
 }
 
+static void	scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	float	new_scale;
+
+	(void)window;
+	(void)xoffset;
+	new_scale = g_env.scale.x + (g_env.scale.x * yoffset * SCROLL_SPEED);
+	g_env.scale.x = new_scale;
+	g_env.scale.y = new_scale;
+	if (g_env.scale.x < 0)
+		g_env.scale.x = 0;
+	if (g_env.scale.y < 0)
+		g_env.scale.y = 0;
+}
+
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if ((key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) ||
@@ -86,17 +114,22 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		toggle_wireframe_mode();
 	else if (key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
-		g_env.off.y = 0;
-		g_env.off.x = 0;
+		g_env.translate.y = 0;
+		g_env.translate.x = 0;
 	}
-	else if (key == GLFW_KEY_UP)
-		g_env.off.y += 0.05;
-	else if (key == GLFW_KEY_DOWN)
-		g_env.off.y -= 0.05;
-	else if (key == GLFW_KEY_LEFT)
-		g_env.off.x -= 0.05;
-	else if (key == GLFW_KEY_RIGHT)
-		g_env.off.x += 0.05;
+	else if (key == GLFW_KEY_H)
+		g_env.translate.x -= 0.05;
+	else if (key == GLFW_KEY_J)
+		g_env.translate.y -= 0.05;
+	else if (key == GLFW_KEY_K)
+		g_env.translate.y += 0.05;
+	else if (key == GLFW_KEY_L)
+		g_env.translate.x += 0.05;
+	else if (key == GLFW_KEY_P)
+	{
+		ft_putendl("=======================");
+		matrix_dump(g_env.trans);
+	}
 	else
 		printf("key: %d scancode %d action %d mods %d\n", key, scancode, action, mods);
 }
@@ -124,8 +157,6 @@ t_bool	init_shaders(void)
 
 t_bool	init(void)
 {
-	g_env.off.x = 0;
-	g_env.off.y = 0;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
         return (false);
@@ -143,6 +174,7 @@ t_bool	init(void)
         return (false);
     }
 	glfwSetKeyCallback(g_env.window, key_callback);
+	glfwSetScrollCallback(g_env.window, scroll_callback);
     glfwMakeContextCurrent(g_env.window);
 	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	if (!init_shaders())
@@ -160,6 +192,11 @@ t_bool	init(void)
 	glfwSetWindowRefreshCallback(g_env.window, window_refresh_callback);
 	glViewport(0, 0, g_env.buf.width, g_env.buf.height);
 	glfwSwapInterval(1);
+	if (!(g_env.trans = matrix_new_id(4)))
+	{
+		/*do the twist*/
+		;
+	}
 	return (true);
 }
 
@@ -210,11 +247,14 @@ void	render(void)
 	}
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	matrix_id(g_env.trans);
+	matrix_scale(g_env.trans, g_env.scale);
+	matrix_translate(g_env.trans, g_env.translate);
+	program_setmat4f(g_env.current_glprogram, "transform", g_env.trans);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, g_tex_wall.id);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, g_tex_face.id);
-	program_set2f(g_env.current_glprogram, "off", g_env.off.x, g_env.off.y);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 /*	glBindVertexArray(VAO);
@@ -223,20 +263,9 @@ void	render(void)
 
 int		main(void)
 {
-
 	if (!init())
 		return (-1);
 
-	t_matrix	*a;
-	t_matrix	*b;
-	float		aa[] = {4, 2, 0, 0, 8, 1, 0, 1, 0};
-	float		bb[] = {4, 2, 1, 2, 0, 4, 9, 4, 2};
-	a = matrix_new_id(3);
-	memcpy(a->elems, aa, sizeof(aa));
-	b = matrix_new_id(3);
-	memcpy(b->elems, bb, sizeof(bb));
-	
-	matrix_dump(matrix_mult(a, b));
     while (!glfwWindowShouldClose(g_env.window))
     {
 		render();

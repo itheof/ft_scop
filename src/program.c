@@ -69,6 +69,14 @@ void	program_set2f(unsigned int id, char const *name, float val1, float val2)
     glUniform2f(glGetUniformLocation(id, name), val1, val2);
 }
 
+void	program_setmat4f(unsigned int id, char const *name, t_matrix const *mat)
+{
+	unsigned int loc;
+   
+	loc = glGetUniformLocation(id, name);
+	glUniformMatrix4fv(loc, 1, GL_TRUE, mat->elems);
+}
+
 void	program_deinit(unsigned id)
 {
 	glDeleteProgram(id);

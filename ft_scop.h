@@ -79,22 +79,32 @@ void 	program_seti(unsigned int id, char const *name, int value);
 void 	program_set2i(unsigned int id, char const *name, int val1, int val2);
 void	program_setf(unsigned int id, char const *name, float value);
 void	program_set2f(unsigned int id, char const *name, float val1, float val2);
+void	program_setmat4f(unsigned int id, char const *name, t_matrix const *mat);
+void	program_deinit(unsigned id);
 
 t_bool	shader_init(t_shader *shader);
 void	shader_deinit(t_shader *shader);
 
 t_bool	texture_init(t_texture *t);
+void	texture_deinit(t_texture *t);
 
 unsigned char	*ppm_load(char const *path, int *width, int *height);
 
 t_matrix	*matrix_new(t_vector size);
 t_matrix	*matrix_new_id(size_t len);
-void		matrix_dump(t_matrix *matrix);
-t_matrix	*matrix_mult(t_matrix *left, t_matrix *right);
+
+void		matrix_id(t_matrix *m);
+void		matrix_translate(t_matrix *m, t_vector trans);
+void		matrix_scale(t_matrix *m, t_vector scale);
+
+void		matrix_set(t_matrix *matrix, t_vector pos, float val);
+void		matrix_dump(t_matrix const *matrix);
+t_matrix	*matrix_mult(t_matrix const *left, t_matrix const *right);
 
 t_vector	vec1(float x);
 t_vector	vec2(float x, float y);
 t_vector	vec3(float x, float y, float z);
 t_vector	vec4(float x, float y, float z, float w);
+t_matrix	*vec_to_matrix(t_vector vec);
 
 #endif

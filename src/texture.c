@@ -33,3 +33,8 @@ t_bool	texture_init(t_texture *t)
 	free(t->data);
 	return (true);
 }
+
+void	texture_deinit(t_texture *t)
+{
+	glDeleteTextures(1, &t->id);
+}

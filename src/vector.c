@@ -53,3 +53,22 @@ t_vector	vec4(float x, float y, float z, float w)
 	vect.w = w;
 	return (vect);
 }
+
+t_matrix	*vec_to_matrix(t_vector vec)
+{
+	t_matrix	*ret;
+	float		*p;
+	size_t		n;
+
+	if ((ret = matrix_new(vec2(vec.ndim, 1))))
+	{
+		n = 0;
+		p = &(vec.x);
+		while (n < vec.ndim)
+		{
+			matrix_set(ret, vec2(n, 0), p[n]);
+			n++;
+		}
+	}
+	return(ret);
+}
