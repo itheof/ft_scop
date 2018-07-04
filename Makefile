@@ -14,12 +14,12 @@ endif
 CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
-CFLAGS    += -I./ -I./inc
+CFLAGS    += -I./include
 
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c matrix.c vector.c misc.c
+SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c matrix.c vector.c misc.c init.c callbacks.c
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj
@@ -30,26 +30,24 @@ BUILD_DIR   = $(OBJ_PATH) $(OBJ_PATH)/common \
 			  $(DEP_PATH)/common $(DEP_PATH)
 
 # Libft
-LIBFT_PATH = libft
+LIBFT_PATH = lib/libft
 LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
 LDFLAGS   += -L$(LIBFT_PATH) -lft
 
 # GLFW
-GLFW_PATH  = glfw
-GLFW       = glfw/build/src/libglfw3.a
-CFLAGS    += -I./glfw/include
-LDFLAGS   += -L glfw/build/src -lglfw3
-
+GLFW_PATH  = lib/glfw
+GLFW       = $(GLFW_PATH)/build/src/libglfw3.a
+CFLAGS    += -I$(GLFW_PATH)/include
 ifeq ($(UNAME_S),Darwin)
 	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework \
 		  CoreVideo
 else
-	GLAD_PATH = glad
+	GLAD_PATH = lib/glad
 	GLAD = $(GLAD_PATH)/src/glad.c
-	CPATH = CPATH=$(GLAD_PATH)/include
+	#CPATH = CPATH=$(GLAD_PATH)/include
 	CFLAGS	+= -I $(GLAD_PATH)/include
-	LDFLAGS += `PKG_CONFIG_PATH=glfw/build/src/ pkg-config --libs --static glfw3`
+	LDFLAGS += `PKG_CONFIG_PATH=$(GLFW_PATH)/build/src/ pkg-config --libs --static glfw3`
 endif
 
 .SECONDARY: $(OBJECTS)

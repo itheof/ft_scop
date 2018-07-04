@@ -33,6 +33,8 @@
 #  define M_PI 3.14159265358979323846264338327950288
 # endif
 # define ASSETS_DIR "assets/"
+# define TEXTURES_DIR ASSETS_DIR "textures/"
+# define SHADERS_DIR ASSETS_DIR "shaders/"
 # define SCROLL_SPEED 0.08
 
 typedef	struct	s_shader
@@ -100,6 +102,10 @@ typedef struct	s_env
 		float		rotangle;
 	}			camera;
 }				t_env;
+
+t_bool	init(t_env *env);
+void	register_callbacks(void);
+void	render(void);
 
 t_bool	file_open(t_file *dst, char const *path, int oflag);
 t_bool	file_load(t_file *f);

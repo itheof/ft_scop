@@ -3,4 +3,4 @@ build
 .obj
 ft_scop
 **/*.swp
-glad
+lib/glad

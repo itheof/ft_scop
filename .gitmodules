@@ -1,6 +1,6 @@
 [submodule "glfw"]
-	path = glfw
+	path = lib/glfw
 	url = https://github.com/glfw/glfw
 [submodule "libft"]
-	path = libft
+	path = lib/libft
 	url = https://github.com/itheof/libft

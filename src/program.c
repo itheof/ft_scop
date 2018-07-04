@@ -14,12 +14,12 @@
 
 static t_shader	g_vert = {
 	.type = GL_VERTEX_SHADER,
-	.path = "ft_scop.vs"
+	.path = SHADERS_DIR "ft_scop.vs"
 };
 
 static t_shader	g_frag = {
 	.type = GL_FRAGMENT_SHADER,
-	.path = "ft_scop.fs"
+	.path = SHADERS_DIR "ft_scop.fs"
 };
 
 t_bool	program_init(unsigned *id)
