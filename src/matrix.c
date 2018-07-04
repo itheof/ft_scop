@@ -10,9 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
-#include "ft_scop.h"
+#define _POSIX_C_SOURCE 200809L
+
 #include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include "libft/libc.h"
+#include "vector.h"
+#include "matrix.h"
 
 #define DEBUG
 
@@ -274,4 +280,23 @@ t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far)
 	matrix_set(ret, vec2(2, 3), - ((2.0f * far * near) / (far - near)));
 	matrix_set(ret, vec2(3, 2), -1.0f);
 	return (ret);
+}
+
+t_matrix	*matrix_new_from(t_vector vec)
+{
+	t_matrix	*ret;
+	float		*p;
+	size_t		n;
+
+	if ((ret = matrix_new(vec2(vec.ndim, 1))))
+	{
+		n = 0;
+		p = &(vec.x);
+		while (n < vec.ndim)
+		{
+			matrix_set(ret, vec2(n, 0), p[n]);
+			n++;
+		}
+	}
+	return(ret);
 }

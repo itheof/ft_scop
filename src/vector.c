@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_scop.h"
+#include <math.h>
+#include <stdlib.h>
+#include "vector.h"
 
 t_vector	vec1(float x)
 {
@@ -67,23 +69,4 @@ t_vector	normalize(t_vector v)
 	res.z = v.z / length;
 	res.w = v.w / length;
 	return (res);
-}
-
-t_matrix	*vec_to_matrix(t_vector vec)
-{
-	t_matrix	*ret;
-	float		*p;
-	size_t		n;
-
-	if ((ret = matrix_new(vec2(vec.ndim, 1))))
-	{
-		n = 0;
-		p = &(vec.x);
-		while (n < vec.ndim)
-		{
-			matrix_set(ret, vec2(n, 0), p[n]);
-			n++;
-		}
-	}
-	return(ret);
 }

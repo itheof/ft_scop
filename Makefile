@@ -39,6 +39,7 @@ LDFLAGS   += -L$(LIBFT_PATH) -lft
 GLFW_PATH  = lib/glfw
 GLFW       = $(GLFW_PATH)/build/src/libglfw3.a
 CFLAGS    += -I$(GLFW_PATH)/include
+LDFLAGS   += -L$(GLFW_PATH)/build/src -lglfw3
 ifeq ($(UNAME_S),Darwin)
 	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework \
 		  CoreVideo
@@ -84,11 +85,11 @@ $(GLFW_PATH):
 	git submodule update --init --recursive
 
 $(GLFW): $(GLFW_PATH)
-	cd glfw && mkdir -p build && cd build && cmake ../ && make
+	cd $(GLFW_PATH) && mkdir -p build && cd build && cmake ../ && make
 
 $(GLAD_PATH):
 	pip install --user glad
-	python -m glad --generator=c --profile=core --out-path glad
+	python -m glad --generator=c --profile=core --out-path $(GLAD_PATH)
 
 $(GLAD): $(GLAD_PATH)
 

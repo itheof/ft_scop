@@ -26,6 +26,8 @@
 # include "libft/stdbool.h"
 # include "libft/libc.h"
 # include "libft/print.h"
+# include "vector.h"
+# include "matrix.h"
 # include <glad/glad.h>
 # include <GLFW/glfw3.h>
 
@@ -61,23 +63,6 @@ typedef struct	s_file
 	char const	*path;
 	char		*data;
 }				t_file;
-
-typedef struct	s_vector
-{
-	size_t		ndim;
-	float		x;
-	float		y;
-	float		z;
-	float		w;
-}				t_vector;
-
-typedef struct	s_matrix
-{
-	size_t	xlen;
-	size_t	ylen;
-	size_t	nelem;
-	float	elems[];
-}				t_matrix;
 
 typedef struct	s_env
 {
@@ -127,26 +112,6 @@ t_bool		texture_init(t_texture *t);
 void		texture_deinit(t_texture *t);
 
 unsigned char	*ppm_load(char const *path, int *width, int *height);
-
-t_matrix	*matrix_new(t_vector size);
-t_matrix	*matrix_new_id(size_t len);
-t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far);
-
-void		matrix_id(t_matrix *m);
-void		matrix_translate(t_matrix *m, t_vector trans);
-void		matrix_scale(t_matrix *m, t_vector scale);
-void		matrix_rotate(t_matrix *m, float angle, t_vector axis);
-
-void		matrix_set(t_matrix *matrix, t_vector pos, float val);
-void		matrix_dump(t_matrix const *matrix);
-t_matrix	*matrix_mult(t_matrix const *left, t_matrix const *right);
-
-t_vector	vec1(float x);
-t_vector	vec2(float x, float y);
-t_vector	vec3(float x, float y, float z);
-t_vector	vec4(float x, float y, float z, float w);
-t_vector	normalize(t_vector v);
-t_matrix	*vec_to_matrix(t_vector vec);
 
 float	ft_degree(float rad);
 float	ft_radian(float degree);
