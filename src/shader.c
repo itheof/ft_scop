@@ -10,7 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_scop.h"
+# define _POSIX_C_SOURCE 200809L
+# include <stdio.h>
+# include <fcntl.h>
+# include "file.h"
+# include <glad/glad.h>
+# include "shader.h"
 
 t_bool			shader_init(t_shader *shader)
 {
@@ -20,7 +25,8 @@ t_bool			shader_init(t_shader *shader)
 
 	if (!file_open(&f, shader->path, O_RDONLY) || !file_load(&f))
 	{
-		dprintf(2, "FATAL: could not load shader %s in memory\n", shader->path);
+		dprintf(2, "Warning: could not load shader %s in memory\n",
+				shader->path);
 		return (false);
 	}
 	shader->id = glCreateShader(shader->type);

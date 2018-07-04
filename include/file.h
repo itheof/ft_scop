@@ -6,6 +6,8 @@
 # include <sys/types.h>
 # include "libft/stdbool.h"
 
+# define ASSETS_DIR "assets/"
+
 typedef struct	s_file
 {
 	struct stat	statbuf;

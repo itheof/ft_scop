@@ -14,8 +14,6 @@
 # define FT_SCOP_H
 
 # define _POSIX_C_SOURCE 200809L
-# include <math.h>
-# include <ctype.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -32,17 +30,8 @@
 # ifndef M_PI
 #  define M_PI 3.14159265358979323846264338327950288
 # endif
-# define ASSETS_DIR "assets/"
 # define TEXTURES_DIR ASSETS_DIR "textures/"
-# define SHADERS_DIR ASSETS_DIR "shaders/"
 # define SCROLL_SPEED 0.08
-
-typedef	struct	s_shader
-{
-	unsigned 	id;
-	GLenum		type;
-	char const	*path;
-}				t_shader;
 
 typedef struct	s_texture
 {
@@ -89,9 +78,6 @@ void	program_setf(unsigned int id, char const *name, float value);
 void	program_set2f(unsigned int id, char const *name, float val1, float val2);
 void	program_setmat4f(unsigned int id, char const *name, t_matrix const *mat);
 void	program_deinit(unsigned id);
-
-t_bool		shader_init(t_shader *shader);
-void		shader_deinit(t_shader *shader);
 
 t_bool		texture_init(t_texture *t);
 void		texture_deinit(t_texture *t);
