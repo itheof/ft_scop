@@ -10,7 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_scop.h"
+# define _POSIX_C_SOURCE 200809L
+# include <unistd.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include "libft/stdbool.h"
+# include "file.h"
 
 t_bool	file_open(t_file *dst, char const *path, int oflag)
 {

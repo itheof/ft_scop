@@ -17,9 +17,6 @@
 # include <math.h>
 # include <ctype.h>
 # include <fcntl.h>
-# include <unistd.h>
-# include <sys/stat.h>
-# include <sys/types.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -28,6 +25,7 @@
 # include "libft/print.h"
 # include "vector.h"
 # include "matrix.h"
+# include "file.h"
 # include <glad/glad.h>
 # include <GLFW/glfw3.h>
 
@@ -54,15 +52,6 @@ typedef struct	s_texture
 	int				width;
 	int				height;
 }				t_texture;
-
-typedef struct	s_file
-{
-	struct stat	statbuf;
-	int			fd;
-	int			oflag;
-	char const	*path;
-	char		*data;
-}				t_file;
 
 typedef struct	s_env
 {
@@ -91,10 +80,6 @@ typedef struct	s_env
 t_bool	init(t_env *env);
 void	register_callbacks(void);
 void	render(void);
-
-t_bool	file_open(t_file *dst, char const *path, int oflag);
-t_bool	file_load(t_file *f);
-void	file_close(t_file *f);
 
 t_bool	program_init(unsigned *id);
 void 	program_setb(unsigned int id, char const *name, t_bool value);
