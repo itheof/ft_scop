@@ -10,32 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-
-#include "libft/stdbool.h"
-#include "libft/print.h"
 #include "ft_scop.h"
-#include "GLFW/glfw3.h"
-
-#define ASSETS_DIR "assets/"
-#define SCROLL_SPEED 0.08
-
-typedef struct	s_env
-{
-	GLFWwindow	*window;
-	struct		s_framebuffer
-	{
-		int		width;
-		int		height;
-	}			buf;
-	unsigned int	current_glprogram;
-	t_bool			wireframe;
-	t_vector	translate;
-	t_vector	scale;
-	t_matrix	*trans;
-}				t_env;
 
 static t_env	g_env = {
 	.translate = {
@@ -48,11 +23,36 @@ static t_env	g_env = {
 		.y = 1,
 		.ndim = 2,
 	},
+	.rotate = {
+		.x = 0,
+		.y = 0,
+		.ndim = 2,
+	},
+	.rotangle = 0,
+	.camera = {
+		.translate = {
+			.x = 0,
+			.y = 0,
+			.z = -3.0f,
+			.ndim = 3,
+		},
+		.scale = {
+			.ndim = 0,
+		},
+		.rotate = {
+			.x = 0,
+			.y = 0,
+			.z = 0,
+			.ndim = 3,
+		},
+		.rotangle = 0,
+	}
 };
 
 static t_texture g_tex_wall = {
 	.path = ASSETS_DIR "wall.ppm",
 };
+
 static t_texture g_tex_face = {
 	.path = ASSETS_DIR "awesomeface.ppm",
 };
@@ -96,13 +96,7 @@ static void	scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 	(void)window;
 	(void)xoffset;
-	new_scale = g_env.scale.x + (g_env.scale.x * yoffset * SCROLL_SPEED);
-	g_env.scale.x = new_scale;
-	g_env.scale.y = new_scale;
-	if (g_env.scale.x < 0)
-		g_env.scale.x = 0;
-	if (g_env.scale.y < 0)
-		g_env.scale.y = 0;
+	g_env.camera.translate.z += g_env.camera.translate.z * yoffset * SCROLL_SPEED;
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -118,18 +112,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		g_env.translate.x = 0;
 	}
 	else if (key == GLFW_KEY_H)
-		g_env.translate.x -= 0.05;
+		g_env.camera.translate.x -= 0.05;
 	else if (key == GLFW_KEY_J)
-		g_env.translate.y -= 0.05;
+		g_env.camera.translate.y -= 0.05;
 	else if (key == GLFW_KEY_K)
-		g_env.translate.y += 0.05;
+		g_env.camera.translate.y += 0.05;
 	else if (key == GLFW_KEY_L)
-		g_env.translate.x += 0.05;
-	else if (key == GLFW_KEY_P)
-	{
-		ft_putendl("=======================");
-		matrix_dump(g_env.trans);
-	}
+		g_env.camera.translate.x += 0.05;
 	else
 		printf("key: %d scancode %d action %d mods %d\n", key, scancode, action, mods);
 }
@@ -192,7 +181,7 @@ t_bool	init(void)
 	glfwSetWindowRefreshCallback(g_env.window, window_refresh_callback);
 	glViewport(0, 0, g_env.buf.width, g_env.buf.height);
 	glfwSwapInterval(1);
-	if (!(g_env.trans = matrix_new_id(4)))
+	if (!(g_env.model = matrix_new_id(4)))
 	{
 		/*do the twist*/
 		;
@@ -203,62 +192,104 @@ t_bool	init(void)
 void	render(void)
 {
 	static float const vertices[] = {
-		 // positions        // colors          // texture coords
-		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f, // top right
-		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 0.0f // bottom up
-		//NOTE: Top and bottom coords are inverted so we dont have to reverse the image
-	};
-	static unsigned int const	indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
 
 	static int	first_run = 1;
 
 	static unsigned int	VAO;
 	static unsigned int	VBO;
-	static unsigned int	EBO;
 
 	if (first_run)
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glEnable(GL_DEPTH_TEST);
 
 		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
 
 		first_run = 0;
 		glUseProgram(g_env.current_glprogram);
 		program_seti(g_env.current_glprogram, "texture1", 0);
 		program_seti(g_env.current_glprogram, "texture2", 1);
 	}
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	matrix_id(g_env.trans);
-	matrix_scale(g_env.trans, g_env.scale);
-	matrix_translate(g_env.trans, g_env.translate);
-	program_setmat4f(g_env.current_glprogram, "transform", g_env.trans);
+	matrix_id(g_env.model);
+	matrix_scale(g_env.model, g_env.scale);
+	matrix_rotate(g_env.model, (float)glfwGetTime(), vec3(0.5f, 1.0f, 0.0f));
+	matrix_translate(g_env.model, g_env.translate);
+	program_setmat4f(g_env.current_glprogram, "model", g_env.model);
+
+	t_matrix	*view = matrix_new_id(4);
+	matrix_scale(view, g_env.camera.scale);
+	matrix_rotate(view, g_env.camera.rotangle, g_env.camera.rotate);
+	matrix_translate(view, g_env.camera.translate);
+	program_setmat4f(g_env.current_glprogram, "view", view);
+	free(view);
+
+	t_matrix	*projection = matrix_new_perspective(ft_radian(45.0f), (float)g_env.buf.width / (float)g_env.buf.height, 0.1f, 100.0f);
+	program_setmat4f(g_env.current_glprogram, "projection", projection);
+	free(projection);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, g_tex_wall.id);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, g_tex_face.id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-/*	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);*/
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	/*
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+*/
 }
 
 int		main(void)

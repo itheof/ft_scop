@@ -14,6 +14,7 @@
 # define FT_SCOP_H
 
 # define _POSIX_C_SOURCE 200809L
+# include <math.h>
 # include <ctype.h>
 # include <fcntl.h>
 # include <unistd.h>
@@ -24,8 +25,15 @@
 # include <string.h>
 # include "libft/stdbool.h"
 # include "libft/libc.h"
+# include "libft/print.h"
 # include <glad/glad.h>
 # include <GLFW/glfw3.h>
+
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846264338327950288
+# endif
+# define ASSETS_DIR "assets/"
+# define SCROLL_SPEED 0.08
 
 typedef	struct	s_shader
 {
@@ -69,6 +77,30 @@ typedef struct	s_matrix
 	float	elems[];
 }				t_matrix;
 
+typedef struct	s_env
+{
+	GLFWwindow	*window;
+	struct		s_framebuffer
+	{
+		int		width;
+		int		height;
+	}			buf;
+	unsigned int	current_glprogram;
+	t_bool			wireframe;
+	t_vector	translate;
+	t_vector	scale;
+	t_vector	rotate;
+	float		rotangle;
+	t_matrix	*model;
+	struct		s_camera
+	{
+		t_vector	translate;
+		t_vector	scale;
+		t_vector	rotate;
+		float		rotangle;
+	}			camera;
+}				t_env;
+
 t_bool	file_open(t_file *dst, char const *path, int oflag);
 t_bool	file_load(t_file *f);
 void	file_close(t_file *f);
@@ -82,20 +114,22 @@ void	program_set2f(unsigned int id, char const *name, float val1, float val2);
 void	program_setmat4f(unsigned int id, char const *name, t_matrix const *mat);
 void	program_deinit(unsigned id);
 
-t_bool	shader_init(t_shader *shader);
-void	shader_deinit(t_shader *shader);
+t_bool		shader_init(t_shader *shader);
+void		shader_deinit(t_shader *shader);
 
-t_bool	texture_init(t_texture *t);
-void	texture_deinit(t_texture *t);
+t_bool		texture_init(t_texture *t);
+void		texture_deinit(t_texture *t);
 
 unsigned char	*ppm_load(char const *path, int *width, int *height);
 
 t_matrix	*matrix_new(t_vector size);
 t_matrix	*matrix_new_id(size_t len);
+t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far);
 
 void		matrix_id(t_matrix *m);
 void		matrix_translate(t_matrix *m, t_vector trans);
 void		matrix_scale(t_matrix *m, t_vector scale);
+void		matrix_rotate(t_matrix *m, float angle, t_vector axis);
 
 void		matrix_set(t_matrix *matrix, t_vector pos, float val);
 void		matrix_dump(t_matrix const *matrix);
@@ -105,6 +139,9 @@ t_vector	vec1(float x);
 t_vector	vec2(float x, float y);
 t_vector	vec3(float x, float y, float z);
 t_vector	vec4(float x, float y, float z, float w);
+t_vector	normalize(t_vector v);
 t_matrix	*vec_to_matrix(t_vector vec);
 
+float	ft_degree(float rad);
+float	ft_radian(float degree);
 #endif

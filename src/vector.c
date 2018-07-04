@@ -54,6 +54,21 @@ t_vector	vec4(float x, float y, float z, float w)
 	return (vect);
 }
 
+t_vector	normalize(t_vector v)
+{
+	float 		length;
+	t_vector	res;
+
+	if (!(length = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z))))
+		return (v);
+	res.ndim = v.ndim;
+	res.x = v.x / length;
+	res.y = v.y / length;
+	res.z = v.z / length;
+	res.w = v.w / length;
+	return (res);
+}
+
 t_matrix	*vec_to_matrix(t_vector vec)
 {
 	t_matrix	*ret;

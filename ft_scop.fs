@@ -13,7 +13,6 @@
 #version 330 core
 
 out vec4	FragColor;
-in vec3		ourColor;
 in vec2		TexCoord;
 
 
@@ -25,5 +24,5 @@ void main()
 	if (texture(texture2, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
 		FragColor = texture(texture2, TexCoord);
 	else
-		FragColor = mix(texture(texture1, TexCoord), vec4(ourColor, 1.0), 0.3);
+		FragColor = texture(texture1, TexCoord);
 }

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <math.h>
 #include "ft_scop.h"
 #include <assert.h>
 
@@ -213,4 +214,64 @@ void	matrix_scale(t_matrix *m, t_vector scale)
 		abort();
 	}
 	matrix_deinit(scalemat);
+}
+
+void	matrix_rotate(t_matrix *m, float angle, t_vector axis)
+{
+	t_matrix	*rotmat;
+	t_matrix	*tmp;
+	t_vector	temp;
+	float		c;
+	float		s;
+
+	assert(m->ylen == 4 && m->xlen == 4);
+	if (!angle || !(rotmat = matrix_new_id(m->ylen)))
+		return ;
+	c = cosf(angle);
+	s = sinf(angle);
+	axis = normalize(axis);
+	temp.ndim = axis.ndim;
+	temp.x = ((1.0f - c) * axis.x);
+	temp.y = ((1.0f - c) * axis.y);
+	temp.z = ((1.0f - c) * axis.z);
+	matrix_set(rotmat, vec2(0, 0), c + axis.x * temp.x);
+	matrix_set(rotmat, vec2(1, 0), temp.x * axis.y + s * axis.z);
+	matrix_set(rotmat, vec2(2, 0), temp.x * axis.z - s * axis.y);
+	matrix_set(rotmat, vec2(0, 1), temp.y * axis.x - s * axis.z);
+	matrix_set(rotmat, vec2(1, 1), c + temp.y * axis.y);
+	matrix_set(rotmat, vec2(2, 1), temp.y * axis.z + s * axis.x);
+	matrix_set(rotmat, vec2(0, 2), temp.z * axis.x + s * axis.y);
+	matrix_set(rotmat, vec2(1, 2), temp.z * axis.y - s * axis.x);
+	matrix_set(rotmat, vec2(2, 2), c + temp.z * axis.z);
+	if ((tmp = matrix_mult(m, rotmat)))
+	{
+		ft_memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
+		matrix_deinit(tmp);
+	}
+	else
+	{
+		dprintf(2, "matrix error: malloc failed\n");
+		abort();
+	}
+	matrix_deinit(rotmat);
+}
+
+t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far)
+{
+	t_matrix	*ret;
+	float 		tanhalf;
+
+	if (!(ret = matrix_new(vec2(4, 4))))
+	{
+		dprintf(2, "matrix error: malloc failed\n");
+		abort();
+	}
+	tanhalf = tanf(fov / 2.0f);
+	ft_bzero(ret->elems, sizeof(*ret->elems) * ret->nelem);
+	matrix_set(ret, vec2(0, 0), 1.0f / (ratio * tanhalf));
+	matrix_set(ret, vec2(1, 1), 1.0f / (tanhalf));
+	matrix_set(ret, vec2(2, 2), - (far + near ) / (far - near));
+	matrix_set(ret, vec2(2, 3), - ((2.0f * far * near) / (far - near)));
+	matrix_set(ret, vec2(3, 2), -1.0f);
+	return (ret);
 }

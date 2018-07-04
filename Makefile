@@ -19,7 +19,7 @@ CFLAGS    += -I./ -I./inc
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c matrix.c vector.c
+SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c matrix.c vector.c misc.c
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj
@@ -58,8 +58,8 @@ all: $(DEPS) $(NAME)
 
 -include $(DEPS)
 
-$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) $(GLFW)
-	$(CC) -o $@ $^ $(GLAD) $(CFLAGS) $(LDFLAGS)
+$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) $(GLAD) | $(LIBFT) $(GLFW)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
