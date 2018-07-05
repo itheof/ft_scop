@@ -13,7 +13,6 @@
 #ifndef FT_SCOP_H
 # define FT_SCOP_H
 
-# define _POSIX_C_SOURCE 200809L
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -24,23 +23,14 @@
 # include "vector.h"
 # include "matrix.h"
 # include "file.h"
+# include "program.h"
+# include "angle_conv.h"
+# include "texture.h"
 # include <glad/glad.h>
 # include <GLFW/glfw3.h>
 
-# ifndef M_PI
-#  define M_PI 3.14159265358979323846264338327950288
-# endif
 # define TEXTURES_DIR ASSETS_DIR "textures/"
 # define SCROLL_SPEED 0.08
-
-typedef struct	s_texture
-{
-	unsigned		id;
-	char const		*path;
-	unsigned char	*data;
-	int				width;
-	int				height;
-}				t_texture;
 
 typedef struct	s_env
 {
@@ -50,7 +40,7 @@ typedef struct	s_env
 		int		width;
 		int		height;
 	}			buf;
-	unsigned int	current_glprogram;
+	t_program	current_glprogram;
 	t_bool			wireframe;
 	t_vector	translate;
 	t_vector	scale;
@@ -70,20 +60,4 @@ t_bool	init(t_env *env);
 void	register_callbacks(void);
 void	render(void);
 
-t_bool	program_init(unsigned *id);
-void 	program_setb(unsigned int id, char const *name, t_bool value);
-void 	program_seti(unsigned int id, char const *name, int value);
-void 	program_set2i(unsigned int id, char const *name, int val1, int val2);
-void	program_setf(unsigned int id, char const *name, float value);
-void	program_set2f(unsigned int id, char const *name, float val1, float val2);
-void	program_setmat4f(unsigned int id, char const *name, t_matrix const *mat);
-void	program_deinit(unsigned id);
-
-t_bool		texture_init(t_texture *t);
-void		texture_deinit(t_texture *t);
-
-unsigned char	*ppm_load(char const *path, int *width, int *height);
-
-float	ft_degree(float rad);
-float	ft_radian(float degree);
 #endif

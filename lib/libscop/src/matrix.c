@@ -26,7 +26,7 @@ static void	test_in_range(char letter, size_t x, size_t xmax)
 {
 	if (x >= xmax)
 	{
-		dprintf(2, "matrix error: attempting to retrieve %c=%zu when "
+		fprintf(stderr, "matrix error: attempting to retrieve %c=%zu when "
 				"%cmax=%zu. Aborting\n", letter, x, letter, xmax);
 		abort();
 	}
@@ -39,7 +39,7 @@ float		*matrix_get_ptr(t_matrix const *matrix, t_vector pos)
 #ifdef DEBUG
 	if (pos.ndim != 2)
 	{
-		dprintf(2, "matrix error: get_ptr was given a bad vector dimension "
+		fprintf(stderr, "matrix error: get_ptr was given a bad vector dimension "
 				"(%zu, expected %d)\n", pos.ndim, 2);
 		abort();
 	}
@@ -74,10 +74,10 @@ void		matrix_dump(t_matrix const *matrix)
 		while (y < matrix->ylen)
 		{
 			f = matrix_get(matrix, vec2(x, y));
-			dprintf(2, " %f ", f);
+			fprintf(stderr, " %f ", f);
 			y++;
 		}
-		dprintf(2, "\n");
+		fprintf(stderr, "\n");
 		x++;
 	}
 }
@@ -187,7 +187,7 @@ void	matrix_translate(t_matrix *m, t_vector trans)
 	}
 	else
 	{
-		dprintf(2, "matrix error: malloc failed\n");
+		fprintf(stderr, "matrix error: malloc failed\n");
 		abort();
 	}
 	matrix_deinit(transmat);
@@ -216,7 +216,7 @@ void	matrix_scale(t_matrix *m, t_vector scale)
 	}
 	else
 	{
-		dprintf(2, "matrix error: malloc failed\n");
+		fprintf(stderr, "matrix error: malloc failed\n");
 		abort();
 	}
 	matrix_deinit(scalemat);
@@ -256,7 +256,7 @@ void	matrix_rotate(t_matrix *m, float angle, t_vector axis)
 	}
 	else
 	{
-		dprintf(2, "matrix error: malloc failed\n");
+		fprintf(stderr, "matrix error: malloc failed\n");
 		abort();
 	}
 	matrix_deinit(rotmat);
@@ -269,7 +269,7 @@ t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far)
 
 	if (!(ret = matrix_new(vec2(4, 4))))
 	{
-		dprintf(2, "matrix error: malloc failed\n");
+		fprintf(stderr, "matrix error: malloc failed\n");
 		abort();
 	}
 	tanhalf = tanf(fov / 2.0f);

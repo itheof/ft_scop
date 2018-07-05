@@ -10,7 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_scop.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "image.h"
+#include "texture.h"
+#include "libft/stdbool.h"
+#include <glad/glad.h>
 
 extern char const	*ppm_error_msg;
 
@@ -18,7 +23,7 @@ t_bool	texture_init(t_texture *t)
 {
 	if (!(t->data = ppm_load(t->path, &t->width, &t->height)))
 	{
-		dprintf(2, "while loading texture: %s", ppm_error_msg);
+		fprintf(stderr, "while loading texture: %s", ppm_error_msg);
 		return (false);
 	}
 	glGenTextures(1, &t->id);

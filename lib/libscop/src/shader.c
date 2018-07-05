@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# define _POSIX_C_SOURCE 200809L
 # include <stdio.h>
 # include <fcntl.h>
 # include "file.h"
@@ -25,7 +24,7 @@ t_bool			shader_init(t_shader *shader)
 
 	if (!file_open(&f, shader->path, O_RDONLY) || !file_load(&f))
 	{
-		dprintf(2, "Warning: could not load shader %s in memory\n",
+		fprintf(stderr, "Warning: could not load shader %s in memory\n",
 				shader->path);
 		return (false);
 	}
@@ -36,7 +35,7 @@ t_bool			shader_init(t_shader *shader)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader->id, sizeof(infoLog), NULL, infoLog);
-		dprintf(2, "ERROR compiling shader %s:\n%s\n", shader->path, infoLog);
+		fprintf(stderr, "ERROR compiling shader %s:\n%s\n", shader->path, infoLog);
 		file_close(&f);
 		return (false);
 	}

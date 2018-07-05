@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# define _POSIX_C_SOURCE 200809L
-# include <unistd.h>
-# include <sys/stat.h>
-# include <sys/types.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include "libft/stdbool.h"
-# include "file.h"
+#define _DEFAULT_SOURCE 
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include "libft/stdbool.h"
+#include "file.h"
 
 t_bool	file_open(t_file *dst, char const *path, int oflag)
 {
@@ -42,7 +42,7 @@ t_bool	file_open(t_file *dst, char const *path, int oflag)
 t_bool	file_load(t_file *f)
 {
 	if (!(f->statbuf.st_mode & S_IFREG))
-		dprintf(2, "warning: cannot load non-regular file %s\n", f->path);
+		fprintf(stderr, "warning: cannot load non-regular file %s\n", f->path);
 	else if ((f->data = malloc(f->statbuf.st_size + 1)) == NULL)
 		perror("malloc");
 	else if (read(f->fd, f->data, f->statbuf.st_size) < 0)

@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_scop.h"
+#include <fcntl.h>
 #include "libft/libc.h"
+#include "file.h"
+#include "image.h"
 
 char const	*ppm_error_msg = NULL;
 

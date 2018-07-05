@@ -13,7 +13,7 @@ t_bool	init_shaders(t_env *env)
 static void error_callback(int error, const char* description)
 {
 	(void)error;
-	dprintf(2, "GLFW error (%d): %s\n", error, description);
+	fprintf(stderr, "GLFW error (%d): %s\n", error, description);
 }
 
 t_bool	init(t_env *env)

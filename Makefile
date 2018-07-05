@@ -1,5 +1,5 @@
 NAME         = ft_scop
-CFLAGS      += -g -Wall -Wextra
+CFLAGS      += -g -Wall -Wextra -Werror
 CFLAGS      += -std=c11
 
 ifeq ($(DEBUG),yes)
@@ -15,11 +15,11 @@ CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
 CFLAGS    += -I./include
-
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) file.c shader.c program.c ppm.c texture.c matrix.c vector.c misc.c init.c callbacks.c
+SOURCES     = $(NAME:%=%.c) init.c callbacks.c
+
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj
@@ -35,21 +35,23 @@ LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
 LDFLAGS   += -L$(LIBFT_PATH) -lft
 
+# Libscop
+LIBSCOP_PATH = lib/libscop
+LIBSCOP      = $(LIBSCOP_PATH)/libscop.a
+CFLAGS       += -I$(LIBSCOP_PATH)/inc
+LDFLAGS      += -L$(LIBSCOP_PATH) -lscop
+
 # GLFW
 GLFW_PATH  = lib/glfw
 GLFW       = $(GLFW_PATH)/build/src/libglfw3.a
-CFLAGS    += -I$(GLFW_PATH)/include
 LDFLAGS   += -L$(GLFW_PATH)/build/src -lglfw3
 ifeq ($(UNAME_S),Darwin)
 	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework \
 		  CoreVideo
 else
-	GLAD_PATH = lib/glad
-	GLAD = $(GLAD_PATH)/src/glad.c
-	#CPATH = CPATH=$(GLAD_PATH)/include
-	CFLAGS	+= -I $(GLAD_PATH)/include
 	LDFLAGS += `PKG_CONFIG_PATH=$(GLFW_PATH)/build/src/ pkg-config --libs --static glfw3`
 endif
+CFLAGS    += -I$(GLFW_PATH)/include
 
 .SECONDARY: $(OBJECTS)
 
@@ -57,12 +59,16 @@ all: $(DEPS) $(NAME)
 
 -include $(DEPS)
 
-$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) $(GLAD) | $(LIBFT) $(GLFW)
+$(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) $(LIBSCOP) $(GLFW)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
-		$(MAKE) -j8 -C $(LIBFT_PATH)
+		$(MAKE) -q --no-print-directory -j8 -C $(LIBFT_PATH)
+
+$(LIBSCOP):
+	@$(MAKE) -q -C $(LIBSCOP_PATH) || echo $(MAKE) -C $(LIBSCOP_PATH) && \
+		$(MAKE) -q --no-print-directory -j8 -C $(LIBSCOP_PATH)
 
 $(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common $(GLFW_PATH)
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -76,10 +82,12 @@ $(BUILD_DIR):
 clean:
 	$(RM) -rf $(OBJ_PATH) $(DEP_PATH)
 	$(MAKE) -C $(LIBFT_PATH) clean
+	$(MAKE) -C $(LIBSCOP_PATH) clean
 
 fclean: clean
 	$(RM) -f $(NAME) $(EXEC_C) $(EXEC_H)
 	$(MAKE) -C $(LIBFT_PATH) fclean
+	$(MAKE) -C $(LIBSCOP_PATH) fclean
 
 $(GLFW_PATH):
 	git submodule update --init --recursive
@@ -87,12 +95,6 @@ $(GLFW_PATH):
 $(GLFW): $(GLFW_PATH)
 	cd $(GLFW_PATH) && mkdir -p build && cd build && cmake ../ && make
 
-$(GLAD_PATH):
-	pip install --user glad
-	python -m glad --generator=c --profile=core --out-path $(GLAD_PATH)
-
-$(GLAD): $(GLAD_PATH)
-
 re: fclean all
 
-.PHONY: all clean fclean re $(LIBFT)
+.PHONY: all clean fclean re $(LIBFT) $(LIBSCOP)

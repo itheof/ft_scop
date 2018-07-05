@@ -49,6 +49,16 @@ t_env	g_env = {
 			.ndim = 3,
 		},
 		.rotangle = 0,
+	},
+	.current_glprogram = {
+		.vertex = {
+			.type = GL_VERTEX_SHADER,
+			.path = SHADERS_DIR "ft_scop.vs"
+		},
+		.fragment = {
+			.type = GL_FRAGMENT_SHADER,
+			.path = SHADERS_DIR "ft_scop.fs"
+		}
 	}
 };
 
@@ -64,7 +74,7 @@ void	render(void);
 
 void 	__attribute__ ((noreturn)) cleanup()
 {
-	program_deinit(g_env.current_glprogram);
+	program_deinit(&g_env.current_glprogram);
 	texture_deinit(&g_tex_wall);
 	texture_deinit(&g_tex_face);
     glDeleteVertexArrays(1, &VAO);
@@ -137,9 +147,9 @@ void	render(void)
 		glEnableVertexAttribArray(1);
 
 		first_run = 0;
-		glUseProgram(g_env.current_glprogram);
-		program_seti(g_env.current_glprogram, "texture1", 0);
-		program_seti(g_env.current_glprogram, "texture2", 1);
+		glUseProgram(g_env.current_glprogram.id);
+		program_seti(&g_env.current_glprogram, "texture1", 0);
+		program_seti(&g_env.current_glprogram, "texture2", 1);
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -147,17 +157,17 @@ void	render(void)
 	matrix_scale(g_env.model, g_env.scale);
 	matrix_rotate(g_env.model, (float)glfwGetTime(), vec3(0.5f, 1.0f, 0.0f));
 	matrix_translate(g_env.model, g_env.translate);
-	program_setmat4f(g_env.current_glprogram, "model", g_env.model);
+	program_setmat4f(&g_env.current_glprogram, "model", g_env.model);
 
 	t_matrix	*view = matrix_new_id(4);
 	matrix_scale(view, g_env.camera.scale);
 	matrix_rotate(view, g_env.camera.rotangle, g_env.camera.rotate);
 	matrix_translate(view, g_env.camera.translate);
-	program_setmat4f(g_env.current_glprogram, "view", view);
+	program_setmat4f(&g_env.current_glprogram, "view", view);
 	free(view);
 
 	t_matrix	*projection = matrix_new_perspective(ft_radian(45.0f), (float)g_env.buf.width / (float)g_env.buf.height, 0.1f, 100.0f);
-	program_setmat4f(g_env.current_glprogram, "projection", projection);
+	program_setmat4f(&g_env.current_glprogram, "projection", projection);
 	free(projection);
 
 	glActiveTexture(GL_TEXTURE0);

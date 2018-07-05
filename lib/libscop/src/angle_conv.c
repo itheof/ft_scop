@@ -1,4 +1,4 @@
-#include "ft_scop.h"
+#include "angle_conv.h"
 
 float	ft_degree(float rad)
 {
