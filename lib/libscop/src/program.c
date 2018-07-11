@@ -13,12 +13,15 @@
 #include <stdio.h>
 #include "shader.h"
 #include "program.h"
+# include <glad/glad.h>
 
 t_bool	program_init(t_program *p)
 {
 	char 	infoLog[512];
 	int	success;
 
+	p->vertex.type = GL_VERTEX_SHADER;
+	p->fragment.type = GL_FRAGMENT_SHADER;
 	if (!shader_init(&p->vertex) || !shader_init(&p->fragment))
 		return (false);
 	p->id = glCreateProgram();

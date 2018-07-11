@@ -18,7 +18,7 @@ CFLAGS    += -I./include
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) init.c callbacks.c
+SOURCES     = $(NAME:%=%.c) init.c callbacks.c cube.c
 
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
@@ -38,7 +38,7 @@ LDFLAGS   += -L$(LIBFT_PATH) -lft
 # Libscop
 LIBSCOP_PATH = lib/libscop
 LIBSCOP      = $(LIBSCOP_PATH)/libscop.a
-CFLAGS       += -I$(LIBSCOP_PATH)/inc
+CFLAGS       += -I$(LIBSCOP_PATH)/include
 LDFLAGS      += -L$(LIBSCOP_PATH) -lscop
 
 # GLFW
@@ -60,17 +60,15 @@ all: $(DEPS) $(NAME)
 -include $(DEPS)
 
 $(NAME): %:$(OBJ_PATH)/%.o $(OBJECTS) | $(LIBFT) $(LIBSCOP) $(GLFW)
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(LIBFT):
-	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
-		$(MAKE) -q --no-print-directory -j8 -C $(LIBFT_PATH)
+	@$(MAKE) -C $(LIBFT_PATH)
 
 $(LIBSCOP):
-	@$(MAKE) -q -C $(LIBSCOP_PATH) || echo $(MAKE) -C $(LIBSCOP_PATH) && \
-		$(MAKE) -q --no-print-directory -j8 -C $(LIBSCOP_PATH)
+	@$(MAKE) -C $(LIBSCOP_PATH)
 
-$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common $(GLFW_PATH)
+$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH) $(GLFW_PATH)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(DEP_PATH)/%.d: %.c | $(DEP_PATH)/common

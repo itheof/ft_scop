@@ -10,6 +10,7 @@ typedef struct	s_program
 	t_shader	vertex;
 	t_shader	fragment;
 	unsigned	id;
+	t_bool		gl_loaded;
 }				t_program;
 
 t_bool	program_init(t_program *p);

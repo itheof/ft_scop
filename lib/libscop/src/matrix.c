@@ -16,7 +16,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "libft/libc.h"
+#include <string.h>
+#include <strings.h>
 #include "vector.h"
 #include "matrix.h"
 
@@ -88,11 +89,12 @@ t_matrix	*matrix_new(t_vector size)
 	size_t		nelem;
 
 	nelem = (size_t)size.x * (size_t)size.y;
-	if ((ret = ft_memalloc(sizeof(t_matrix) + sizeof(float) * nelem)))
+	if ((ret = malloc(sizeof(t_matrix) + sizeof(float) * nelem)))
 	{
 		ret->xlen = (size_t)size.x;
 		ret->ylen = (size_t)size.y;
 		ret->nelem = nelem;
+		memset(ret->elems, 0, sizeof(*ret->elems) * ret->nelem);
 	}
 	return (ret);
 }
@@ -103,7 +105,7 @@ void		matrix_id(t_matrix *m)
 
 	assert(m->xlen == m->ylen);
 	i = 0;
-	ft_bzero(m->elems, sizeof(*m->elems) * m->nelem);
+	memset(m->elems, 0, sizeof(*m->elems) * m->nelem);
 	while (i < m->xlen)
 	{
 		matrix_set(m, vec2(i, i), 1);
@@ -182,7 +184,7 @@ void	matrix_translate(t_matrix *m, t_vector trans)
 	}
 	if ((tmp = matrix_mult(m, transmat)))
 	{
-		ft_memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
+		memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
 		matrix_deinit(tmp);
 	}
 	else
@@ -211,7 +213,7 @@ void	matrix_scale(t_matrix *m, t_vector scale)
 	}
 	if ((tmp = matrix_mult(m, scalemat)))
 	{
-		ft_memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
+		memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
 		matrix_deinit(tmp);
 	}
 	else
@@ -251,7 +253,7 @@ void	matrix_rotate(t_matrix *m, float angle, t_vector axis)
 	matrix_set(rotmat, vec2(2, 2), c + temp.z * axis.z);
 	if ((tmp = matrix_mult(m, rotmat)))
 	{
-		ft_memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
+		memcpy(m, tmp, sizeof(*m) + sizeof(float) * tmp->nelem);
 		matrix_deinit(tmp);
 	}
 	else
@@ -273,7 +275,7 @@ t_matrix	*matrix_new_perspective(float fov, float ratio, float near, float far)
 		abort();
 	}
 	tanhalf = tanf(fov / 2.0f);
-	ft_bzero(ret->elems, sizeof(*ret->elems) * ret->nelem);
+	memset(ret->elems, 0, sizeof(*ret->elems) * ret->nelem);
 	matrix_set(ret, vec2(0, 0), 1.0f / (ratio * tanhalf));
 	matrix_set(ret, vec2(1, 1), 1.0f / (tanhalf));
 	matrix_set(ret, vec2(2, 2), - (far + near ) / (far - near));

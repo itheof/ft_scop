@@ -1,16 +1,12 @@
 #include "ft_scop.h"
 
-extern  t_texture g_tex_wall;
-extern  t_texture g_tex_face;
+#define INIT_WIDTH 640
+#define INIT_HEIGHT 480
 
-t_bool	init_shaders(t_env *env)
-{
-	if (!program_init(&env->current_glprogram))
-		return (false);
-	return (true);
-}
+extern t_texture 	g_tex_wall;
+extern t_texture 	g_tex_face;
 
-static void error_callback(int error, const char* description)
+static void 	error_callback(int error, const char* description)
 {
 	(void)error;
 	fprintf(stderr, "GLFW error (%d): %s\n", error, description);
@@ -18,6 +14,9 @@ static void error_callback(int error, const char* description)
 
 t_bool	init(t_env *env)
 {
+	int	width;
+	int	height;
+
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
         return (false);
@@ -27,7 +26,7 @@ t_bool	init(t_env *env)
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-    env->window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    env->window = glfwCreateWindow(INIT_WIDTH, INIT_HEIGHT,"Hello World", NULL, NULL);
     if (!env->window)
     {
 		ft_putstr_fd("Could not open window", 2);
@@ -35,27 +34,19 @@ t_bool	init(t_env *env)
         return (false);
     }
     glfwMakeContextCurrent(env->window);
-#ifndef __APPLE__
-	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-#endif
-	if (!init_shaders(env))
+	if (!libscop_init(glfwGetProcAddress))
 	{
-		ft_putendl_fd("Failed to compile shaders", 2);
 		glfwTerminate();
 		return (false);
 	}
+	glfwGetFramebufferSize(env->window, &width, &height);
+	display_set_viewport(width, height);
+	glfwSwapInterval(1);
+	register_callbacks();
+	/*
 	if (!texture_init(&g_tex_wall) || !texture_init(&g_tex_face))
 	{
 		ft_putendl_fd("Failed to load textures", 2);
-	}
-	glfwGetFramebufferSize(env->window, &env->buf.width, &env->buf.height);
-	glViewport(0, 0, env->buf.width, env->buf.height);
-	glfwSwapInterval(1);
-	register_callbacks();
-	if (!(env->model = matrix_new_id(4)))
-	{
-		/*do the twist*/
-		;
-	}
+	}*/
 	return (true);
 }

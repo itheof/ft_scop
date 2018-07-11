@@ -20,13 +20,7 @@
 # include "libft/stdbool.h"
 # include "libft/libc.h"
 # include "libft/print.h"
-# include "vector.h"
-# include "matrix.h"
-# include "file.h"
-# include "program.h"
-# include "angle_conv.h"
-# include "texture.h"
-# include <glad/glad.h>
+# include "libscop.h"
 # include <GLFW/glfw3.h>
 
 # define TEXTURES_DIR ASSETS_DIR "textures/"
@@ -35,29 +29,10 @@
 typedef struct	s_env
 {
 	GLFWwindow	*window;
-	struct		s_framebuffer
-	{
-		int		width;
-		int		height;
-	}			buf;
-	t_program	current_glprogram;
-	t_bool			wireframe;
-	t_vector	translate;
-	t_vector	scale;
-	t_vector	rotate;
-	float		rotangle;
-	t_matrix	*model;
-	struct		s_camera
-	{
-		t_vector	translate;
-		t_vector	scale;
-		t_vector	rotate;
-		float		rotangle;
-	}			camera;
+	t_camera	camera;
 }				t_env;
 
 t_bool	init(t_env *env);
 void	register_callbacks(void);
-void	render(void);
 
 #endif
