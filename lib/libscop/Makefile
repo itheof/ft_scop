@@ -38,7 +38,8 @@ CFLAGS    += -I$(LIBFT_PATH)/inc
 ifeq ($(UNAME_S),Darwin)
 else
 	GLAD_PATH = glad
-	GLAD_OBJ = $(GLAD_PATH)/src/glad.o
+	GLAD = $(GLAD_PATH)/src/glad.c
+	GLAD_OBJ = $(GLAD:%.c=%.o)
 	GLAD_CFLAGS	= -I$(GLAD_PATH)/include
 	CFLAGS    += $(GLAD_CFLAGS)
 endif
@@ -77,6 +78,7 @@ fclean: clean
 	$(MAKE) -C $(LIBFT_PATH) fclean
 
 $(GLAD):
+	mkdir -p `readlink $(GLAD_PATH)`
 	pip install --user glad
 	python -m glad --generator=c --profile=core --out-path $(GLAD_PATH)
 
