@@ -20,7 +20,7 @@ t_env	g_env = {
 			.translate = {
 				.x = 0,
 				.y = 0,
-				.z = -3.0f,
+				.z = -2.0f,
 				.ndim = 3,
 			},
 			.scale = {
@@ -37,16 +37,6 @@ t_env	g_env = {
 	},
 };
 
-/*
-t_texture g_tex_wall = {
-	.path = TEXTURES_DIR "wall.ppm",
-};
-
-t_texture g_tex_face = {
-	.path = TEXTURES_DIR "awesomeface.ppm",
-};
-*/
-
 t_cube	*g_cube = NULL;
 
 void 	__attribute__ ((noreturn)) cleanup()
@@ -59,6 +49,9 @@ void 	__attribute__ ((noreturn)) cleanup()
 
 int		main(int argc, char *argv[])
 {
+  double time;
+  size_t	frames;
+
 	if (!init(&g_env))
 		return (-1);
 
@@ -69,8 +62,19 @@ int		main(int argc, char *argv[])
 		(void)argv;
 		;/*objects_push(for each argv);*/
 	}
+	time = glfwGetTime();
+	frames = 0;
+	fprintf(stderr, "frames: ");
     while (!glfwWindowShouldClose(g_env.window))
     {
+		if (glfwGetTime() > time + 1)
+	 	{
+			fprintf(stderr, "\rframes: %zu", frames);
+			frames = 0;
+			time = glfwGetTime();
+	 	}
+	 	else
+			frames++;
 		objects_update();
 		objects_render(g_env.camera);
 		glfwSwapBuffers(g_env.window);

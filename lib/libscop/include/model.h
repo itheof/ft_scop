@@ -8,6 +8,7 @@ typedef struct	s_model
 	char const	*path;
 	unsigned	uid;
 	float const	*vertices;
+	size_t		vertices_size;
 	size_t		nvertices;
 	unsigned	vao;
 	unsigned	vbo;

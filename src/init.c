@@ -1,7 +1,7 @@
 #include "ft_scop.h"
 
-#define INIT_WIDTH 640
-#define INIT_HEIGHT 480
+#define INIT_WIDTH 1280
+#define INIT_HEIGHT 960
 
 extern t_texture 	g_tex_wall;
 extern t_texture 	g_tex_face;

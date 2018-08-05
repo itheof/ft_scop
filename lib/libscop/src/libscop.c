@@ -7,7 +7,7 @@ t_bool	libscop_init(void (* (*get_proc_addr)(const char *))(void))
 #ifndef __APPLE__
 	gladLoadGLLoader((GLADloadproc) get_proc_addr);
 #endif
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 /*	if (!program_init(&g_program))
 	{

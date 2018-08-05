@@ -7,6 +7,7 @@
 # include "model.h"
 # include "camera.h"
 # include "program.h"
+# include "texture.h"
 
 typedef struct	s_object
 {
@@ -14,6 +15,7 @@ typedef struct	s_object
 	struct s_object	*next;
 	struct s_object	*prev;
 	t_model			*model;
+	t_texture		**textures;
 
 	/* public attributes */
 	size_t		size; /* The size of the full struct including the

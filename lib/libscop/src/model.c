@@ -49,11 +49,24 @@ static float const cube_vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
+/*
+static float const	cube_vertices[] = {
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
+         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // top right
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+};
+*/
+
+
 static t_model	fallback_model = {
 	.path = NULL,
 	.uid = FALLBACK_MODEL_UID,
 	.vertices = cube_vertices,
-	.nvertices = sizeof(cube_vertices) / sizeof(*cube_vertices),
+	.vertices_size = sizeof(cube_vertices),
+	.nvertices = 36,
 	.gl_loaded = false
 };
 
@@ -72,7 +85,7 @@ t_model	*model_load(char const *path)
 		glGenVertexArrays(1, &ret->vao);
 		glBindVertexArray(ret->vao);
 		glBindBuffer(GL_ARRAY_BUFFER, ret->vbo);
-		glBufferData(GL_ARRAY_BUFFER, ret->nvertices, ret->vertices,
+		glBufferData(GL_ARRAY_BUFFER, ret->vertices_size, ret->vertices,
 				GL_STATIC_DRAW);
 
 		/* will depend if the vertices contain UV mapping and other */

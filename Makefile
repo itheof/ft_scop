@@ -29,17 +29,17 @@ DEPS        = $(SOURCES:%.c=$(DEP_PATH)/%.d)
 BUILD_DIR   = $(OBJ_PATH) $(OBJ_PATH)/common \
 			  $(DEP_PATH)/common $(DEP_PATH)
 
-# Libft
-LIBFT_PATH = lib/libft
-LIBFT      = $(LIBFT_PATH)/libft.a
-CFLAGS    += -I $(LIBFT_PATH)/inc
-LDFLAGS   += -L$(LIBFT_PATH) -lft
-
 # Libscop
 LIBSCOP_PATH = lib/libscop
 LIBSCOP      = $(LIBSCOP_PATH)/libscop.a
 CFLAGS       += -I$(LIBSCOP_PATH)/include
 LDFLAGS      += -L$(LIBSCOP_PATH) -lscop
+
+# Libft
+LIBFT_PATH = lib/libft
+LIBFT      = $(LIBFT_PATH)/libft.a
+CFLAGS    += -I $(LIBFT_PATH)/inc
+LDFLAGS   += -L$(LIBFT_PATH) -lft
 
 # GLFW
 GLFW_PATH  = lib/glfw
@@ -95,4 +95,4 @@ $(GLFW): $(GLFW_PATH)
 
 re: fclean all
 
-.PHONY: all clean fclean re $(LIBFT) $(LIBSCOP)
+.PHONY: all clean fclean re $(LIBFT) $(LIBSCOP) $(NAME)

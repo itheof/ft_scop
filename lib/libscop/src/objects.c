@@ -21,6 +21,7 @@ void	*objects_push(t_object const *obj)
 {
 	void		*ret;
 	t_object	*tmp;
+	size_t	i;
 
 	assert(obj->size > sizeof(*obj));
 	if (!(ret = malloc(obj->size)))
@@ -41,6 +42,15 @@ void	*objects_push(t_object const *obj)
 	{
 		//TODO: error handling
 	}
+	i = 0;
+	while (tmp->textures[i])
+	{
+		if (!texture_init(tmp->textures[i]))
+		{
+			;//TODO: error handling
+		}
+		i++;
+	}
 	return (ret);
 }
 
@@ -49,7 +59,12 @@ void	*objects_push(t_object const *obj)
 
 void	objects_pop(t_object *obj)
 {
+	size_t	i;
+
 	program_deinit(obj->program);
+	i = 0;
+	while (obj->textures[i])
+		texture_deinit(obj->textures[i++]);
 	model_unload(obj->model); //XXX
 	if (obj->prev)
 	{
@@ -89,6 +104,7 @@ void	objects_render(t_camera camera)
 	static t_matrix	*view = NULL;
 	static t_matrix	*model = NULL;
 	t_object		*object;
+	size_t			i;
 
 	if (!view)
 	{
@@ -102,6 +118,8 @@ void	objects_render(t_camera camera)
 			view = NULL;
 			free(model);
 			model = NULL;
+			//program_seti(g_objectsl->program, "texture1", g_objectsl->textures[0]->id);
+			//program_seti(g_objectsl->program, "texture2", g_objectsl->textures[1]->id);
 			return ;
 		}
 	}
@@ -120,14 +138,25 @@ void	objects_render(t_camera camera)
 	while (object != NULL)
 	{
 		glUseProgram(object->program->id);
+		matrix_id(model);
 		matrix_scale(model, object->transform.scale);
 		matrix_rotate(model, object->transform.rotangle, object->transform.rotate);
 		matrix_translate(model, object->transform.translate);
 		program_setmat4f(object->program, "model", model);
 		program_setmat4f(object->program, "view", view);
 		program_setmat4f(object->program, "projection", g_projection);
+
+		i = 0;
+		while (object->textures[i])
+		{
+			glActiveTexture((i == 0) ? GL_TEXTURE0 : GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, object->textures[i]->id);
+			/*TODO hardcoded*/
+			fprintf(stderr, "texture %d\n", object->textures[i]->id);
+			i++;
+		}
+
 		glBindVertexArray(object->model->vao);
-		fprintf(stderr, "%d\n", (int)object->model->vao);
 		glDrawArrays(GL_TRIANGLES, 0, object->model->nvertices);
 		object = object->next;
 	}

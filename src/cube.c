@@ -1,8 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cube.h"
+#include "texture.h"
 #include "libscop.h"
+#include "ft_scop.h"
 #include <GLFW/glfw3.h>
+
+static t_texture	g_tex_wall = {
+	.path = TEXTURES_DIR "wall.ppm",
+};
+
+static t_texture	g_tex_face = {
+	.path = TEXTURES_DIR "awesomeface.ppm",
+};
 
 static t_program	g_program = {
 	.gl_loaded = false,
@@ -22,6 +32,10 @@ static void	cube_init(void *obj)
 	cube = obj;
 	fprintf(stdout, "spawning a new cube n%d\n", count);
 	cube->uid = count++;
+	cube->obj.textures = malloc(sizeof(*cube->obj.textures) * 3);
+	cube->obj.textures[0] = &g_tex_wall;
+	cube->obj.textures[1] = &g_tex_face;
+	cube->obj.textures[2] = NULL;
 }
 
 static void	cube_update(void *obj)
@@ -50,9 +64,9 @@ t_object	const g_cube_obj = {
 			.ndim = 2,
 		},
 		.rotate = {
-			.x = 0.5f,
-			.y = 1.0f,
-			.z = 0.0f,
+			.x = 0.0f,
+			.y = 0.0f,
+			.z = 1.0f,
 			.ndim = 3,
 		},
 		.rotangle = 0,
