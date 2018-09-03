@@ -17,6 +17,25 @@
 extern t_matrix	*g_projection;
 static t_object	*g_objectsl = NULL;
 
+static char	tx_uniforms[][sizeof("texture15")] = {
+	"texture0",
+	"texture1",
+	"texture2",
+	"texture3",
+	"texture4",
+	"texture5",
+	"texture6",
+	"texture7",
+	"texture8",
+	"texture9",
+	"texture10",
+	"texture11",
+	"texture12",
+	"texture13",
+	"texture14",
+	"texture15"
+};
+
 void	*objects_push(t_object const *obj)
 {
 	void		*ret;
@@ -47,8 +66,11 @@ void	*objects_push(t_object const *obj)
 	{
 		if (!texture_init(tmp->textures[i]))
 		{
+			fprintf(stderr, "texture_init failed\n");
 			;//TODO: error handling
 		}
+		else
+			fprintf(stderr, "loaded new texture\n");
 		i++;
 	}
 	return (ret);
@@ -149,10 +171,11 @@ void	objects_render(t_camera camera)
 		i = 0;
 		while (object->textures[i])
 		{
-			glActiveTexture((i == 0) ? GL_TEXTURE0 : GL_TEXTURE1);
+			assert(i < 16);
+			/* XXX: not guaranteed that gl supports I > 15 aka 16 textures*/
+			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, object->textures[i]->id);
-			/*TODO hardcoded*/
-			fprintf(stderr, "texture %d\n", object->textures[i]->id);
+			program_seti(object->program, tx_uniforms[i], i);
 			i++;
 		}
 

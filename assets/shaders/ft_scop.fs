@@ -15,13 +15,13 @@
 out vec4	FragColor;
 in vec2		TexCoord;
 
+uniform sampler2D texture0;
 uniform sampler2D texture1;
-uniform sampler2D texture2;
 
 void main()
 {
-	if (texture(texture2, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
-		FragColor = texture(texture2, TexCoord);
-	else
+	if (texture(texture1, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
 		FragColor = texture(texture1, TexCoord);
+	else
+		FragColor = texture(texture0, TexCoord);
 }

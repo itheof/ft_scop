@@ -53,7 +53,9 @@ int		main(int argc, char *argv[])
   size_t	frames;
 
 	if (!init(&g_env))
+	{
 		return (-1);
+	}
 
 	if (argc == 1)
 		g_cube = objects_push(&g_cube_obj);

@@ -37,6 +37,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		g_env.camera.transform.translate.y += 0.05;
 	else if (key == GLFW_KEY_L)
 		g_env.camera.transform.translate.x += 0.05;
+	else if (key == GLFW_KEY_MINUS)
+		g_env.camera.transform.translate.z -= SCROLL_SPEED;
+	else if (key == GLFW_KEY_EQUAL)
+		g_env.camera.transform.translate.z += SCROLL_SPEED;
 	else
 		printf("key: %d scancode %d action %d mods %d\n", key, scancode, action, mods);
 }

@@ -1,12 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libscop.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/03 14:00:28 by tvallee           #+#    #+#             */
+/*   Updated: 2018/09/03 14:03:25 by tvallee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <glad/glad.h>
 #include "libft/stdbool.h"
 #include "object.h"
+#include <stdio.h>
 
 t_bool	libscop_init(void (* (*get_proc_addr)(const char *))(void))
 {
-#ifndef __APPLE__
-	gladLoadGLLoader((GLADloadproc) get_proc_addr);
-#endif
+	if (!gladLoadGLLoader((GLADloadproc)get_proc_addr))
+    {
+		fprintf(stderr, "Failed to initialize GLAD\n");
+        return (false);
+    }
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 /*	if (!program_init(&g_program))
