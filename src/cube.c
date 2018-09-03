@@ -65,7 +65,7 @@ t_object	const g_cube_obj = {
 		},
 		.rotate = {
 			.x = 0.0f,
-			.y = 0.0f,
+			.y = 1.0f,
 			.z = 1.0f,
 			.ndim = 3,
 		},
