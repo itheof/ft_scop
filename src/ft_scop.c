@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 13:52:46 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/04 17:58:55 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,18 @@ void	push_cube(void)
 	g_cube_index++;
 	g_cubes[g_cube_index] = objects_push(&g_cube_obj);
 }
+
+void	cube_toggle_texture(t_cube *obj)
+{
+	if (obj->texture_toggled)
+	{
+		obj->texture_toggled = false;
+		obj->texture_change_axis *= -1.0f;
+	}
+	else
+		obj->texture_toggled = true;
+}
+
 
 void	cube_focus_next(void)
 {
@@ -136,7 +148,6 @@ int		main(int argc, char *argv[])
 	}
 	time = glfwGetTime();
 	frames = 0;
-	fprintf(stderr, "frames: ");
     while (!glfwWindowShouldClose(g_env.window))
     {
 		if (g_env.mouse_held)

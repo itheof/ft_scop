@@ -24,6 +24,7 @@ static void	mouse_button_callback(GLFWwindow* window, int button, int action, in
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	//XXX: check if g_cube is actually instancianted already
     if ((key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) ||
 			(key == GLFW_KEY_Q && action == GLFW_PRESS))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -56,6 +57,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		g_cubes[g_cube_index]->move.y = (action == GLFW_RELEASE) ? 0 : 1.0;
 	else if (key == GLFW_KEY_L)
 		g_cubes[g_cube_index]->move.x = (action == GLFW_RELEASE) ? 0 : 1.0;
+
+	else if (key == GLFW_KEY_T && action == GLFW_PRESS)
+		cube_toggle_texture(g_cubes[g_cube_index]);
 
 	else if (key == GLFW_KEY_MINUS)
 		g_env.camera.transform.translate.z -= SCROLL_SPEED;

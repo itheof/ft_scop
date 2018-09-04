@@ -14,11 +14,23 @@ static t_texture	g_tex_face = {
 	.path = TEXTURES_DIR "awesomeface.ppm",
 };
 
+static t_uniform_val	cube_texture_ratio(void *obj)
+{
+	t_uniform_val	ret;
+	ret.f = ((t_cube*)obj)->texture_ratio;
+	return (ret);
+}
+
 static t_uniform const	g_uniforms[] = {
 	{
 		.type = E_UNIFORM_BOOL,
 		.name = "is_selected",
 		.resolve = &cube_is_current,
+	},
+	{
+		.type = E_UNIFORM_FLOAT,
+		.name = "texture_ratio",
+		.resolve = &cube_texture_ratio,
 	},
 	{
 		.type = E_UNIFORM_END,
@@ -48,21 +60,44 @@ static void	cube_init(void *obj)
 	cube->obj.textures[0] = &g_tex_wall;
 	cube->obj.textures[1] = &g_tex_face;
 	cube->obj.textures[2] = NULL;
+	/* textures probably should not be set there*/
 
 	cube->move.x = 0;
 	cube->move.y = 0;
 	cube->move.z = 0;
+	cube->texture_ratio = 0.0f;
+	cube->texture_change_axis = 1.0f;
+	cube->texture_toggled = false;
 }
 
 static void	cube_update(void *obj)
 {
 	t_cube	*cube;
+	float	new_ratio;
 
 	cube = obj;
 	cube->obj.transform.rotangle = (float)glfwGetTime();
 	cube->obj.transform.translate.x += cube->move.x * 0.01;
 	cube->obj.transform.translate.y += cube->move.y * 0.01;
 	/* insert a parameter to make the movement dependent on the elapsed time */
+	if (cube->texture_toggled)
+	{
+		new_ratio = cube->texture_ratio + cube->texture_change_axis * TEXTURING_SPEED;
+		if (new_ratio > 1.0f)
+		{
+			cube->texture_ratio = 1.0f;
+			cube->texture_toggled = false;
+			cube->texture_change_axis *= -1.0f;
+		}
+		else if (new_ratio < 0.0f)
+		{
+			cube->texture_ratio = 0.0f;
+			cube->texture_toggled = false;
+			cube->texture_change_axis *= -1.0f;
+		}
+		else
+			cube->texture_ratio = new_ratio;
+	}
 }
 
 t_object	const g_cube_obj = {

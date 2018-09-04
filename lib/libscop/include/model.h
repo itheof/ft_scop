@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   model.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/04 14:17:45 by tvallee           #+#    #+#             */
+/*   Updated: 2018/09/04 14:17:52 by tvallee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MODEL_H
 # define MODEL_H
 
@@ -15,6 +27,6 @@ typedef struct	s_model
 	t_bool		gl_loaded;
 }				t_model;
 
-t_model	*model_load(char const *path);
-void	model_unload(t_model *m);
+t_model			*model_load(char const *path);
+void			model_unload(t_model *m);
 #endif

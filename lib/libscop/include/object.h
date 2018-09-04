@@ -12,12 +12,14 @@
 typedef struct	s_object
 {
 	/* private attributes */
+
 	struct s_object	*next;
 	struct s_object	*prev;
 	t_model			*model;
 	t_texture		**textures;
 
 	/* public attributes */
+
 	size_t		size; /* The size of the full struct including the
 						 object member*/
 	t_program	*program; /* ptr to the shader program (initialized or not) */
@@ -31,10 +33,14 @@ typedef struct	s_object
 	void		(*update)(void *obj); /* hook in the main loop */
 }				t_object;
 
-void	*objects_push(t_object const *obj); /*returns ptr to malloced(obj->size) */
+void	*objects_push(t_object const *obj);
+
 void	objects_pop(t_object *obj);
-void	objects_update(void); /* triggers all objects update() hooks */
-void	objects_render(t_camera camera); /* renders all objects to screen */
+
+void	objects_update(void);
+
+void	objects_render(t_camera camera);
+
 void	objects_cleanup(void);
 
 #endif
