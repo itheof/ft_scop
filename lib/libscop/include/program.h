@@ -4,13 +4,15 @@
 # include "libft/stdbool.h"
 # include "shader.h"
 # include "matrix.h"
+# include "uniform.h"
 
 typedef struct	s_program
 {
-	t_shader	vertex;
-	t_shader	fragment;
-	unsigned	id;
-	t_bool		gl_loaded;
+	t_shader		vertex;
+	t_shader		fragment;
+	unsigned		id;
+	t_bool			gl_loaded;
+	t_uniform const	(*uniforms)[];
 }				t_program;
 
 t_bool	program_init(t_program *p);

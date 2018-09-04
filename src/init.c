@@ -1,8 +1,5 @@
 #include "ft_scop.h"
 
-#define INIT_WIDTH 1280
-#define INIT_HEIGHT 960
-
 extern t_texture 	g_tex_wall;
 extern t_texture 	g_tex_face;
 
@@ -26,7 +23,7 @@ t_bool	init(t_env *env)
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-    env->window = glfwCreateWindow(INIT_WIDTH, INIT_HEIGHT,"Hello World", NULL, NULL);
+    env->window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT,"Hello World", NULL, NULL);
     if (!env->window)
     {
 		ft_putstr_fd("Could not open window", 2);

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:17:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/25 18:03:15 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/04 12:22:40 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,32 @@
 # include "libft/libc.h"
 # include "libft/print.h"
 # include "libscop.h"
+# include "uniform.h"
 # include <GLFW/glfw3.h>
 
 # define TEXTURES_DIR ASSETS_DIR "textures/"
 # define SCROLL_SPEED 0.08
+# define CAMERA_MOVE_SPEED 3
+# define WIN_WIDTH 1280
+# define WIN_HEIGHT 960
+
+# define MAX_CUBES 256
 
 typedef struct	s_env
 {
 	GLFWwindow	*window;
 	t_camera	camera;
+	t_bool		mouse_held;
+	int			width;
+	int			height;
 }				t_env;
 
 t_bool	init(t_env *env);
 void	register_callbacks(void);
+void	update_camera_translation(t_bool init);
+t_uniform_val	cube_is_current(void *obj);
+void	push_cube(void);
+void	cube_focus_next(void);
+void	cube_focus_prev(void);
 
 #endif

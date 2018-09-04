@@ -1,3 +1,4 @@
 -I./
--Ilibft/inc
--I./glfw/include
+-Ilib/libft/inc
+-Ilib/glfw/include
+-Ilib/libscop/include

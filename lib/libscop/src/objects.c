@@ -1,39 +1,32 @@
-/* enable textures 
-		program_seti(&g_env.current_glprogram, "texture1", 0);
-		program_seti(&g_env.current_glprogram, "texture2", 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, g_tex_wall.id);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, g_tex_face.id);
-*/
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <assert.h>
 #include "matrix.h"
 #include "object.h"
+#include "uniform.h"
 # include <glad/glad.h>
 
 extern t_matrix	*g_projection;
 static t_object	*g_objectsl = NULL;
 
 static char	tx_uniforms[][sizeof("texture15")] = {
-	"texture0",
-	"texture1",
-	"texture2",
-	"texture3",
-	"texture4",
-	"texture5",
-	"texture6",
-	"texture7",
-	"texture8",
-	"texture9",
-	"texture10",
-	"texture11",
-	"texture12",
-	"texture13",
-	"texture14",
-	"texture15"
+	"_texture0",
+	"_texture1",
+	"_texture2",
+	"_texture3",
+	"_texture4",
+	"_texture5",
+	"_texture6",
+	"_texture7",
+	"_texture8",
+	"_texture9",
+	"_texture10",
+	"_texture11",
+	"_texture12",
+	"_texture13",
+	"_texture14",
+	"_texture15"
 };
 
 void	*objects_push(t_object const *obj)
@@ -49,9 +42,9 @@ void	*objects_push(t_object const *obj)
 		return (NULL);
 	}
 	tmp = ret;
+	memcpy(tmp, obj, sizeof(*obj));
 	tmp->next = g_objectsl;
 	g_objectsl = tmp;
-	memcpy(tmp, obj, sizeof(*obj));
 
 	if (tmp->init)
 		tmp->init(tmp);
@@ -102,7 +95,6 @@ void	objects_pop(t_object *obj)
 	}
 	free(obj);
 }
-
 void	objects_cleanup(void)
 {
 	while (g_objectsl != NULL)
@@ -162,11 +154,35 @@ void	objects_render(t_camera camera)
 		glUseProgram(object->program->id);
 		matrix_id(model);
 		matrix_scale(model, object->transform.scale);
-		matrix_rotate(model, object->transform.rotangle, object->transform.rotate);
 		matrix_translate(model, object->transform.translate);
-		program_setmat4f(object->program, "model", model);
-		program_setmat4f(object->program, "view", view);
-		program_setmat4f(object->program, "projection", g_projection);
+		matrix_rotate(model, object->transform.rotangle, object->transform.rotate);
+		program_setmat4f(object->program, "_model", model);
+		program_setmat4f(object->program, "_view", view);
+		program_setmat4f(object->program, "_projection", g_projection);
+
+		/* setting program uniforms */
+
+		if (object->program->uniforms != NULL)
+		{
+			t_uniform const *current;
+
+			current = *object->program->uniforms;
+			while (current->type != E_UNIFORM_END)
+			{
+				switch (current->type)
+				{
+					case E_UNIFORM_BOOL:
+						program_setb(object->program, current->name, current->resolve(object).b);
+						break;
+					default:
+						fprintf(stderr, "unsupported yet uniform type %d\n", current->type);
+						abort();
+				}
+				current++;
+			}
+		}
+
+		/* done */
 
 		i = 0;
 		while (object->textures[i])

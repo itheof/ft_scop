@@ -14,6 +14,17 @@ static t_texture	g_tex_face = {
 	.path = TEXTURES_DIR "awesomeface.ppm",
 };
 
+static t_uniform const	g_uniforms[] = {
+	{
+		.type = E_UNIFORM_BOOL,
+		.name = "is_selected",
+		.resolve = &cube_is_current,
+	},
+	{
+		.type = E_UNIFORM_END,
+	}
+};
+
 static t_program	g_program = {
 	.gl_loaded = false,
 	.vertex = {
@@ -21,7 +32,8 @@ static t_program	g_program = {
 	},
 	.fragment = {
 		.path = SHADERS_DIR "ft_scop.fs"
-	}
+	},
+	.uniforms = &g_uniforms,
 };
 
 static void	cube_init(void *obj)
@@ -36,6 +48,10 @@ static void	cube_init(void *obj)
 	cube->obj.textures[0] = &g_tex_wall;
 	cube->obj.textures[1] = &g_tex_face;
 	cube->obj.textures[2] = NULL;
+
+	cube->move.x = 0;
+	cube->move.y = 0;
+	cube->move.z = 0;
 }
 
 static void	cube_update(void *obj)
@@ -44,6 +60,9 @@ static void	cube_update(void *obj)
 
 	cube = obj;
 	cube->obj.transform.rotangle = (float)glfwGetTime();
+	cube->obj.transform.translate.x += cube->move.x * 0.01;
+	cube->obj.transform.translate.y += cube->move.y * 0.01;
+	/* insert a parameter to make the movement dependent on the elapsed time */
 }
 
 t_object	const g_cube_obj = {
