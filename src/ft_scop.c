@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 12:33:56 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/04 13:52:46 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	cube_focus_prev(void)
 		return ;
 	else if (g_cube_index == 0)
 	{
-		while (g_cubes[g_cube_index + 1] && g_cube_index < MAX_CUBES)
+		while (g_cube_index + 1 < MAX_CUBES && g_cubes[g_cube_index + 1])
 			g_cube_index++;
 	}
 	else
