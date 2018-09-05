@@ -14,6 +14,7 @@
 
 out vec4	FragColor;
 in vec2		TexCoord;
+in float	Color;
 
 uniform bool	is_selected;
 uniform float	texture_ratio;
@@ -24,7 +25,7 @@ uniform sampler2D _texture1;
 void main()
 {
 	vec4	combined;
-	vec4	base_color = vec4(0.3529, 0.3236, 0.3236, 1.0);
+	vec4	base_color = vec4(Color, Color, Color, 1.0);
 
 	if (texture(_texture1, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
 		combined = texture(_texture1, TexCoord);

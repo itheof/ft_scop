@@ -6,60 +6,48 @@
 #define FALLBACK_MODEL_UID 0
 
 static float const cube_vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.863,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.863,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.863,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.827,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.827,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.827,
 
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.753,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.753,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.753,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.663,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.663,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.663,
 
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.502,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.502,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.502,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.412,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.412,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.412,
 
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.863,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.863,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.863,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.827,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.827,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.827,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.753,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.753,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.753,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.663,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.663,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.663,
 
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.502,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.502,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.502,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.412,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.412,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.412
 };
-
-/*
-static float const	cube_vertices[] = {
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
-         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // top right
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-};
-*/
-
 
 static t_model	fallback_model = {
 	.path = NULL,
@@ -90,11 +78,14 @@ t_model	*model_load(char const *path)
 
 		/* will depend if the vertices contain UV mapping and other */
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-				5 * sizeof(float), (void*)0);
+				6 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-				5 * sizeof(float), (void*)(3 * sizeof(float)));
+				6 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,
+				6 * sizeof(float), (void*)(5 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 		ret->gl_loaded = true;
 	}
 	return (ret);

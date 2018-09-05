@@ -57,7 +57,7 @@ $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
 		$(MAKE) -j8 -C $(LIBFT_PATH)
 
-$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(BUILD_DIR)
+$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(GLAD) $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(GLAD_OBJ): $(GLAD)
