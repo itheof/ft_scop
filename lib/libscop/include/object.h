@@ -30,14 +30,14 @@ typedef struct	s_object
 	/* behavior hooks */
 	void		(*init)(void *obj); /* post malloc -> memcpy hook
 									   (before glinit)*/
-	void		(*update)(void *obj); /* hook in the main loop */
+	void		(*update)(void *obj, double dtime); /* hook in the main loop */
 }				t_object;
 
 void	*objects_push(t_object const *obj);
 
 void	objects_pop(t_object *obj);
 
-void	objects_update(void);
+void	objects_update(double dtime);
 
 void	objects_render(t_camera camera);
 

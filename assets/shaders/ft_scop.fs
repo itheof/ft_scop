@@ -25,15 +25,14 @@ void main()
 {
 	vec4	combined;
 	vec4	base_color = vec4(0.3529, 0.3236, 0.3236, 1.0);
-	vec4	with_selected;
 
 	if (texture(_texture1, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
 		combined = texture(_texture1, TexCoord);
 	else
 		combined = texture(_texture0, TexCoord);
+	combined = mix(base_color, combined, texture_ratio);
 	if (is_selected)
-		with_selected = mix(combined, vec4(1.0, 0.0, 0.0, 0.5), 0.2);
+		FragColor = mix(combined, vec4(1.0, 0.0, 0.0, 0.5), 0.2);
 	else
-		with_selected = combined;
-	FragColor = mix(base_color, with_selected, texture_ratio);
+		FragColor = combined;
 }

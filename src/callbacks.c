@@ -48,6 +48,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		else
 			cube_focus_next();
 	}
+	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+		g_cubes[g_cube_index]->rotating = !g_cubes[g_cube_index]->rotating;
 
 	else if (key == GLFW_KEY_H)
 		g_cubes[g_cube_index]->move.x = (action == GLFW_RELEASE) ? 0 : -1.0;

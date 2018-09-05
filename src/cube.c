@@ -68,15 +68,17 @@ static void	cube_init(void *obj)
 	cube->texture_ratio = 0.0f;
 	cube->texture_change_axis = 1.0f;
 	cube->texture_toggled = false;
+	cube->rotating = true;
 }
 
-static void	cube_update(void *obj)
+static void	cube_update(void *obj, double dtime)
 {
 	t_cube	*cube;
 	float	new_ratio;
 
 	cube = obj;
-	cube->obj.transform.rotangle = (float)glfwGetTime();
+	if (cube->rotating)
+		cube->obj.transform.rotangle += (float)dtime;
 	cube->obj.transform.translate.x += cube->move.x * 0.01;
 	cube->obj.transform.translate.y += cube->move.y * 0.01;
 	/* insert a parameter to make the movement dependent on the elapsed time */

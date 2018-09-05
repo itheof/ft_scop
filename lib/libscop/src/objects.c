@@ -101,14 +101,14 @@ void	objects_cleanup(void)
 		objects_pop(g_objectsl);
 }
 
-void	objects_update(void)
+void	objects_update(double dtime)
 {
 	t_object	*object;
 
 	object = g_objectsl;
 	while (object != NULL)
 	{
-		object->update(object);
+		object->update(object, dtime);
 		object = object->next;
 	}
 }

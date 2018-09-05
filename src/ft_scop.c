@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 17:58:55 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/04 18:09:24 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,11 +158,11 @@ int		main(int argc, char *argv[])
                  "ft_scop - [FPS: %zu]", frames);
 			glfwSetWindowTitle(g_env.window, title);
 			frames = 0;
-			time = glfwGetTime();
 	 	}
 	 	else
 			frames++;
-		objects_update();
+		objects_update(glfwGetTime() - time);
+		time = glfwGetTime();
 		objects_render(g_env.camera);
 		glfwSwapBuffers(g_env.window);
 		glfwPollEvents();
