@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:17:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 17:54:17 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/05 17:29:34 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,8 @@ typedef struct	s_env
 void	cube_toggle_texture(t_cube *obj);
 t_bool	init(t_env *env);
 void	register_callbacks(void);
-void	update_camera_translation(t_bool init);
-t_uniform_val	cube_is_current(void *obj);
-void	push_cube(void);
+void	update_camera(t_bool init);
+void	push_cube(char const *model_path);
 void	cube_focus_next(void);
 void	cube_focus_prev(void);
 

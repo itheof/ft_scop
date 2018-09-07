@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/05 14:02:48 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/05 17:32:55 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,74 +41,14 @@ t_env	g_env = {
 	.height = WIN_HEIGHT
 };
 
-int		g_cube_index = -1;
-t_cube	*g_cubes[MAX_CUBES] = { NULL };
-
-void 	__attribute__ ((noreturn)) cleanup()
+void	cleanup(void)
 {
 	libscop_deinit();
-	/* This ^ will deinit all the gl ressources, programs, and our obects */
 	glfwTerminate();
 	exit(0);
 }
 
-t_uniform_val	cube_is_current(void *obj)
-{
-	t_uniform_val	ret;
-
-	ret.b = (obj == g_cubes[g_cube_index]);
-	return (ret);
-}
-
-void	push_cube(void)
-{
-	if (g_cube_index + 1 >= MAX_CUBES)
-	{
-		fprintf(stderr, "already too many objects. skipping...\n");
-		return ;
-	}
-	g_cube_index++;
-	g_cubes[g_cube_index] = objects_push(&g_cube_obj);
-}
-
-void	cube_toggle_texture(t_cube *obj)
-{
-	if (obj->texture_toggled)
-	{
-		obj->texture_toggled = false;
-		obj->texture_change_axis *= -1.0f;
-	}
-	else
-		obj->texture_toggled = true;
-}
-
-
-void	cube_focus_next(void)
-{
-	if (g_cube_index == -1)
-		return ;
-	else if (g_cube_index == MAX_CUBES - 1)
-		g_cube_index = 0;
-	else if (g_cubes[g_cube_index + 1])
-		g_cube_index++;
-	else
-		g_cube_index = 0;
-}
-
-void	cube_focus_prev(void)
-{
-	if (g_cube_index < 0)
-		return ;
-	else if (g_cube_index == 0)
-	{
-		while (g_cube_index + 1 < MAX_CUBES && g_cubes[g_cube_index + 1])
-			g_cube_index++;
-	}
-	else
-		g_cube_index--;
-}
-
-void	update_camera_translation(t_bool init)
+void	update_camera(t_bool init)
 {
 	static double	x = 0.0f;
 	static double	y = 0.0f;
@@ -120,52 +60,60 @@ void	update_camera_translation(t_bool init)
 	else
 	{
 		glfwGetCursorPos(g_env.window, &newx, &newy);
-		g_env.camera.transform.translate.x += (newx - x) / g_env.width * CAMERA_MOVE_SPEED;
-		g_env.camera.transform.translate.y -= (newy - y) / g_env.height * CAMERA_MOVE_SPEED;
-		/* the movement should be dependent on the camera z translate as well */
+		if (glfwGetKey(g_env.window, GLFW_KEY_LEFT_CONTROL))
+		{
+			g_env.camera.transform.translate.x +=
+				(newx - x) / g_env.width * CAMERA_MOVE_SPEED;
+			g_env.camera.transform.translate.y -=
+				(newy - y) / g_env.height * CAMERA_MOVE_SPEED;
+		}
 		x = newx;
 		y = newy;
 	}
 }
 
-int		main(int argc, char *argv[])
+static void	loop(void)
 {
-  double 	time;
-  size_t	frames;
-  char		title[256];
+	double	time;
+	size_t	frames;
+	char	title[256];
 
-	if (!init(&g_env))
-	{
-		return (-1);
-	}
-
-	if (argc == 1)
-		push_cube();
-	else
-	{
-		(void)argv;
-		;/*objects_push(for each argv);*/
-	}
 	time = glfwGetTime();
 	frames = 0;
-    while (!glfwWindowShouldClose(g_env.window))
-    {
+	while (!glfwWindowShouldClose(g_env.window))
+	{
 		if (g_env.mouse_held)
-			update_camera_translation(false);
+			update_camera(false);
 		if (glfwGetTime() > time + 1)
-	 	{
-			snprintf ( title, sizeof(title),
-                 "ft_scop - [FPS: %zu]", frames);
+		{
+			snprintf(title, sizeof(title), "ft_scop - [FPS: %zu]", frames);
 			glfwSetWindowTitle(g_env.window, title);
 			frames = 0;
-	 	}
-	 	else
+		}
+		else
 			frames++;
 		objects_update(glfwGetTime() - time);
 		time = glfwGetTime();
 		objects_render(g_env.camera);
 		glfwSwapBuffers(g_env.window);
 		glfwPollEvents();
-    }
+	}
+}
+
+int			main(int argc, char *argv[])
+{
+	int	i;
+
+	if (!init(&g_env))
+		return (-1);
+	if (argc == 1)
+		push_cube(NULL);
+	else
+	{
+		i = 1;
+		while (i < argc)
+			push_cube(argv[i++]);
+	}
+	loop();
 	cleanup();
 }

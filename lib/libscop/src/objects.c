@@ -32,8 +32,8 @@ static char	tx_uniforms[][sizeof("texture15")] = {
 void	*objects_push(t_object const *obj)
 {
 	void		*ret;
-	t_object	*tmp;
-	size_t	i;
+	t_object	*alias;
+	size_t		i;
 
 	assert(obj->size > sizeof(*obj));
 	if (!(ret = malloc(obj->size)))
@@ -41,23 +41,23 @@ void	*objects_push(t_object const *obj)
 		fprintf(stderr, "objects error: failed allocating %zu bytes\n", obj->size);
 		return (NULL);
 	}
-	tmp = ret;
-	memcpy(tmp, obj, sizeof(*obj));
-	tmp->next = g_objectsl;
-	g_objectsl = tmp;
+	alias = ret;
+	memcpy(alias, obj, sizeof(*obj));
 
-	if (tmp->init)
-		tmp->init(tmp);
+	if (alias->init)
+		alias->init(alias);
 
-	tmp->model = model_load(tmp->model_path);
-	if (!program_init(tmp->program))
+	alias->next = g_objectsl;
+	g_objectsl = alias;
+	alias->model = model_load(alias->model_path);
+	if (!program_init(alias->program))
 	{
 		//TODO: error handling
 	}
 	i = 0;
-	while (tmp->textures[i])
+	while (alias->textures[i])
 	{
-		if (!texture_init(tmp->textures[i]))
+		if (!texture_init(alias->textures[i]))
 		{
 			fprintf(stderr, "texture_init failed\n");
 			;//TODO: error handling
@@ -132,8 +132,6 @@ void	objects_render(t_camera camera)
 			view = NULL;
 			free(model);
 			model = NULL;
-			//program_seti(g_objectsl->program, "texture1", g_objectsl->textures[0]->id);
-			//program_seti(g_objectsl->program, "texture2", g_objectsl->textures[1]->id);
 			return ;
 		}
 	}

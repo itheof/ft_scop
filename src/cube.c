@@ -6,6 +6,9 @@
 #include "ft_scop.h"
 #include <GLFW/glfw3.h>
 
+extern int		g_cube_index;
+extern t_cube	*g_cubes[MAX_CUBES];
+
 static t_texture	g_tex_wall = {
 	.path = TEXTURES_DIR "wall.ppm",
 };
@@ -18,6 +21,14 @@ static t_uniform_val	cube_texture_ratio(void *obj)
 {
 	t_uniform_val	ret;
 	ret.f = ((t_cube*)obj)->texture_ratio;
+	return (ret);
+}
+
+static t_uniform_val	cube_is_current(void *obj)
+{
+	t_uniform_val	ret;
+
+	ret.b = (obj == g_cubes[g_cube_index]);
 	return (ret);
 }
 
@@ -48,27 +59,53 @@ static t_program	g_program = {
 	.uniforms = &g_uniforms,
 };
 
+static void	cube_unfocus(void *obj)
+{
+	t_cube	*cube;
+
+	cube = obj;
+	cube->move.x = 0;
+	cube->move.y = 0;
+}
+
+static void	cube_set_defaults(t_cube *cube)
+{
+	static t_cube const	cube_defaults = {
+		/* .obj = {
+		NOTE: the obj member should not be memset. assign all submembers one by
+		one if necessary
+		}*/
+		.move = {
+			.x = 0,
+			.y = 0,
+			.z = 0,
+		},
+		.texture_ratio = 0.0f,
+		.texture_change_axis = 1.0f,
+		.texture_toggled = false,
+		.rotating = true,
+		.unfocus = &cube_unfocus
+	};
+
+	memcpy((char*)cube + sizeof(cube->obj), (char const*)&cube_defaults +
+			sizeof(cube->obj), sizeof(*cube) - sizeof(cube->obj));
+}
+
 static void	cube_init(void *obj)
 {
+	
 	static int	count = 0;
 	t_cube	*cube;
 
 	cube = obj;
 	fprintf(stdout, "spawning a new cube n%d\n", count);
+	cube_set_defaults(cube);
 	cube->uid = count++;
 	cube->obj.textures = malloc(sizeof(*cube->obj.textures) * 3);
 	cube->obj.textures[0] = &g_tex_wall;
 	cube->obj.textures[1] = &g_tex_face;
 	cube->obj.textures[2] = NULL;
 	/* textures probably should not be set there*/
-
-	cube->move.x = 0;
-	cube->move.y = 0;
-	cube->move.z = 0;
-	cube->texture_ratio = 0.0f;
-	cube->texture_change_axis = 1.0f;
-	cube->texture_toggled = false;
-	cube->rotating = true;
 }
 
 static void	cube_update(void *obj, double dtime)
@@ -100,6 +137,17 @@ static void	cube_update(void *obj, double dtime)
 		else
 			cube->texture_ratio = new_ratio;
 	}
+}
+
+void	cube_toggle_texture(t_cube *obj)
+{
+	if (obj->texture_toggled)
+	{
+		obj->texture_toggled = false;
+		obj->texture_change_axis *= -1.0f;
+	}
+	else
+		obj->texture_toggled = true;
 }
 
 t_object	const g_cube_obj = {

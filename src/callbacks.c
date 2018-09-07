@@ -19,68 +19,67 @@ static void	mouse_button_callback(GLFWwindow* window, int button, int action, in
 	(void)button;
 	(void)mods;
 	g_env.mouse_held = (action == GLFW_PRESS);
-	update_camera_translation(true);
+	update_camera(true);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	//XXX: check if g_cube is actually instancianted already
+	t_cube	*focused;
+
+	(void)scancode;
     if ((key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) ||
 			(key == GLFW_KEY_Q && action == GLFW_PRESS))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
-
 	else if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		display_toggle_wireframe();
-	else if (key == GLFW_KEY_R && action == GLFW_PRESS)
-	{
-		/* This can be enhanced by keeping only a pointer to the obj header.
-		 * Then we will be able to memset the transform data easily. We can
-		 * even specify a function pointer to reset the
-		 * object (or call init again)
-		*/
-		g_cubes[g_cube_index]->obj.transform.translate.y = 0;
-		g_cubes[g_cube_index]->obj.transform.translate.x = 0;
-	}
-	else if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
-	{
-		if (mods & GLFW_MOD_SHIFT)
-			cube_focus_prev();
-		else
-			cube_focus_next();
-	}
-	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-		g_cubes[g_cube_index]->rotating = !g_cubes[g_cube_index]->rotating;
-
-	else if (key == GLFW_KEY_H)
-		g_cubes[g_cube_index]->move.x = (action == GLFW_RELEASE) ? 0 : -1.0;
-	else if (key == GLFW_KEY_J)
-		g_cubes[g_cube_index]->move.y = (action == GLFW_RELEASE) ? 0 : -1.0;
-	else if (key == GLFW_KEY_K)
-		g_cubes[g_cube_index]->move.y = (action == GLFW_RELEASE) ? 0 : 1.0;
-	else if (key == GLFW_KEY_L)
-		g_cubes[g_cube_index]->move.x = (action == GLFW_RELEASE) ? 0 : 1.0;
-
-	else if (key == GLFW_KEY_T && action == GLFW_PRESS)
-		cube_toggle_texture(g_cubes[g_cube_index]);
-
 	else if (key == GLFW_KEY_MINUS)
 		g_env.camera.transform.translate.z -= SCROLL_SPEED;
 	else if (key == GLFW_KEY_EQUAL)
 		g_env.camera.transform.translate.z += SCROLL_SPEED;
-
 	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
 	{
-		if (g_cubes[g_cube_index])
-		{
-			g_cubes[g_cube_index]->move.x = 0;
-			g_cubes[g_cube_index]->move.y = 0;
-		}
-		/* the above would be best in a "unselected" hook */
-
-		push_cube();
+		focused = g_cubes[g_cube_index];
+		if (focused)
+			focused->unfocus(focused);
+		push_cube(NULL);
 	}
-	else if (action == GLFW_PRESS)
+	else if (g_cubes[g_cube_index])
+	{
+		focused = g_cubes[g_cube_index];
+		if (key == GLFW_KEY_R && action == GLFW_PRESS)
+		{
+			/* This can be enhanced by keeping only a pointer to the obj header.
+			 * Then we will be able to memset the transform data easily. We can
+			 * even specify a function pointer to reset the
+			 * object (or call init again)
+			*/
+			focused->obj.transform.translate.y = 0;
+			focused->obj.transform.translate.x = 0;
+		}
+		else if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+		{
+			if (mods & GLFW_MOD_SHIFT)
+				cube_focus_prev();
+			else
+				cube_focus_next();
+		}
+		else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+			focused->rotating = !focused->rotating;
+		else if (key == GLFW_KEY_H)
+			focused->move.x = (action == GLFW_RELEASE) ? 0 : -1.0;
+		else if (key == GLFW_KEY_J)
+			focused->move.y = (action == GLFW_RELEASE) ? 0 : -1.0;
+		else if (key == GLFW_KEY_K)
+			focused->move.y = (action == GLFW_RELEASE) ? 0 : 1.0;
+		else if (key == GLFW_KEY_L)
+			focused->move.x = (action == GLFW_RELEASE) ? 0 : 1.0;
+
+		else if (key == GLFW_KEY_T && action == GLFW_PRESS)
+			cube_toggle_texture(focused);
+	}
+/*	else if (action == GLFW_PRESS)
 		printf("key: %d scancode %d action %d mods %d\n", key, scancode, action, mods);
+		*/
 }
 
 void	framebuffer_callback(GLFWwindow *window, int width, int height)

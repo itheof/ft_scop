@@ -1,8 +1,5 @@
 #include "ft_scop.h"
 
-extern t_texture 	g_tex_wall;
-extern t_texture 	g_tex_face;
-
 static void 	error_callback(int error, const char* description)
 {
 	(void)error;
@@ -39,11 +36,7 @@ t_bool	init(t_env *env)
 	glfwGetFramebufferSize(env->window, &width, &height);
 	display_set_viewport(width, height);
 	glfwSwapInterval(1);
+
 	register_callbacks();
-	/*
-	if (!texture_init(&g_tex_wall) || !texture_init(&g_tex_face))
-	{
-		ft_putendl_fd("Failed to load textures", 2);
-	}*/
 	return (true);
 }

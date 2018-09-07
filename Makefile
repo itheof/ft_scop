@@ -18,7 +18,7 @@ CFLAGS    += -I./include
 # Sources
 SRC_PATH    = src
 
-SOURCES     = $(NAME:%=%.c) init.c callbacks.c cube.c
+SOURCES     = $(NAME:%=%.c) init.c callbacks.c cube.c object_mgr.c
 
 # Generation
 vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))

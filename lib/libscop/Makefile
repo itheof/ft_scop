@@ -20,7 +20,7 @@ CFLAGS    += -I./include
 SRC_PATH    = src
 
 SOURCES     = file.c shader.c program.c ppm.c texture.c matrix.c vector.c \
-			  angle_conv.c display.c libscop.c objects.c model.c
+			  angle_conv.c display.c libscop.c objects.c model.c wfobj.c
 # Generation
 vpath %.c $(SRC_PATH)
 OBJ_PATH    = .obj
