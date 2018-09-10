@@ -175,6 +175,9 @@ void	objects_render(t_camera camera)
 					case E_UNIFORM_FLOAT:
 						program_setf(object->program, current->name, current->resolve(object).f);
 						break;
+					case E_UNIFORM_3FLOAT:
+						program_set3f(object->program, current->name, current->resolve(object));
+						break;
 					default:
 						fprintf(stderr, "unsupported yet uniform type %d\n", current->type);
 						abort();

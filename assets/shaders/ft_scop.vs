@@ -18,6 +18,7 @@ layout (location = 2) in float color;
 uniform mat4 	_model;
 uniform mat4 	_view;
 uniform mat4 	_projection;
+uniform vec3	_offset;
 
 out vec2		TexCoord;
 out float		Color;
@@ -25,6 +26,6 @@ out float		Color;
 void main()
 {
 	Color = color;
-  gl_Position = _projection * _view * _model * vec4(aPos, 1.0);
+  gl_Position = _projection * _view * _model * vec4(aPos + _offset, 1.0);
 	TexCoord = uv_mapping;
 }

@@ -32,6 +32,18 @@ static t_uniform_val	cube_is_current(void *obj)
 	return (ret);
 }
 
+static t_uniform_val	cube_get_offset(void *obj)
+{
+	t_uniform_val	ret;
+	t_model			*model;
+
+	model = ((t_cube *)obj)->obj.model;
+	ret.f3[0] = model->offset.x;
+	ret.f3[1] = model->offset.y;
+	ret.f3[2] = model->offset.z;
+	return (ret);
+}
+
 static t_uniform const	g_uniforms[] = {
 	{
 		.type = E_UNIFORM_BOOL,
@@ -42,6 +54,11 @@ static t_uniform const	g_uniforms[] = {
 		.type = E_UNIFORM_FLOAT,
 		.name = "texture_ratio",
 		.resolve = &cube_texture_ratio,
+	},
+	{
+		.type = E_UNIFORM_3FLOAT,
+		.name = "_offset",
+		.resolve = &cube_get_offset
 	},
 	{
 		.type = E_UNIFORM_END,
@@ -170,7 +187,7 @@ t_object	const g_cube_obj = {
 		.rotate = {
 			.x = 0.0f,
 			.y = 1.0f,
-			.z = 1.0f,
+			.z = 0.0f,
 			.ndim = 3,
 		},
 		.rotangle = 0,

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 10:41:37 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/10 13:42:06 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/10 18:37:19 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <limits.h>
 #include "wfobj.h"
 
 struct	s_kw_handler
@@ -39,6 +40,34 @@ static t_bool	unimplemented(t_wfobj *dst, char const *line, char const *kw)
 	return (false);
 }
 
+static void		update_extreme_vertex(t_wfobj *dst, t_vertex vertex)
+{
+	int	i;
+
+	i = 0;
+	if (dst->extreme_unset)
+	{
+		while (i < vertex.ndim)
+		{
+			dst->min_vertex.coord[i] = vertex.coord[i];
+			dst->max_vertex.coord[i] = vertex.coord[i];
+			i++;
+		}
+		dst->extreme_unset = false;
+	}
+	else
+	{
+		while (i < vertex.ndim)
+		{
+			if (dst->min_vertex.coord[i] > vertex.coord[i])
+				dst->min_vertex.coord[i] = vertex.coord[i];
+			if (dst->max_vertex.coord[i] < vertex.coord[i])
+				dst->max_vertex.coord[i] = vertex.coord[i];
+			i++;
+		}
+	}
+}
+
 static t_bool	parse_vertex(t_wfobj *dst, char const *line, char const *kw)
 {
 	t_vertex	vertex;
@@ -48,7 +77,7 @@ static t_bool	parse_vertex(t_wfobj *dst, char const *line, char const *kw)
 	vertex.ndim = sscanf(line, "%f %f %f %f", vertex.coord + COORD_X,
 			vertex.coord + COORD_Y, vertex.coord + COORD_Z, vertex.coord + COORD_W);
 	if (vertex.ndim < 3)
-		fprintf(stderr, "unsufficient vertex input");
+		fprintf(stderr, "insufficient vertex input");
 	else
 	{
 		if (vertex.ndim != 4)
@@ -61,6 +90,7 @@ static t_bool	parse_vertex(t_wfobj *dst, char const *line, char const *kw)
 		ft_lstpushback(&dst->v, lst);
 		dst->n_v++;
 	}
+	update_extreme_vertex(dst, vertex);
 	return (true);
 }
 
@@ -76,7 +106,7 @@ static t_bool	parse_vertex_normal(t_wfobj *dst, char const *line,
 			vn.coord + COORD_Z);
 	if (nscan != 3)
 	{
-		fprintf(stderr, "unsufficient vertex normal input");
+		fprintf(stderr, "insufficient vertex normal input");
 		return (false);
 	}
 	if (!(lst = ft_lstnew(&vn, sizeof(vn))))
@@ -100,7 +130,7 @@ static t_bool	parse_vertex_texture(t_wfobj *dst, char const *line,
 			vt.coord + COORD_Z);
 	if (vt.ndim == 0)
 	{
-		fprintf(stderr, "unsufficient vertex texture input");
+		fprintf(stderr, "insufficient vertex texture input");
 		return (false);
 	}
 	if (vt.ndim < 3)
@@ -118,13 +148,53 @@ static t_bool	parse_vertex_texture(t_wfobj *dst, char const *line,
 	return (true);
 }
 
-static t_bool	parse_face_push(t_wfobj *dst, t_face f)
+static t_bool	normalize_index(int *indexp, size_t imax)
+{
+	if (imax > INT_MAX) //XXX
+		return (false);
+	if (*indexp > (int)imax)
+		return (false);
+	else if (*indexp < 0)
+	{
+		if (*indexp == INT_MIN) //XXX
+			return (false);
+		if (-1 * (*indexp) > (int)imax)
+			return (false);
+		*indexp *= -1;
+	}
+	return (true);
+}
+
+static t_bool	normalize_face(t_wfobj *obj, t_face *f)
+{
+	int	i;
+
+	i = 0;
+	while (i < f->n_sides)
+	{
+		if (!normalize_index(&f->triplets[i][TRIPLET_V], obj->n_v))
+			return (false);
+		if (f->texture && !normalize_index(&f->triplets[i][TRIPLET_VT], obj->n_vt))
+			return (false);
+		if (f->normal && !normalize_index(&f->triplets[i][TRIPLET_VN], obj->n_vn))
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+static t_bool	parse_face_push(t_wfobj *dst, t_face *f)
 {
 	t_list	*lst;
 
-	if (!(lst = ft_lstnew(&f, sizeof(f))))
+	if (!normalize_face(dst, f))
 	{
-		perror("parse_face_push malloc");
+		fprintf(stderr, "invalid face coordinates");
+		return (false);
+	}
+	if (!(lst = ft_lstnew(f, sizeof(*f))))
+	{
+		fprintf(stderr, "parse_face_push malloc");
 		return (false);
 	}
 	ft_lstpushback(&dst->f, lst);
@@ -144,7 +214,7 @@ static t_bool	parse_face(t_wfobj *dst, char const *line, char const *kw)
 	{
 		f.normal = false;
 		f.texture = false;
-		return (parse_face_push(dst, f));
+		return (parse_face_push(dst, &f));
 	}
 	else if ((f.n_sides = sscanf(line, "%d// %d// %d// %d//",
 				&f.triplets[0][TRIPLET_V], &f.triplets[1][TRIPLET_V],
@@ -152,40 +222,40 @@ static t_bool	parse_face(t_wfobj *dst, char const *line, char const *kw)
 	{
 		f.normal = false;
 		f.texture = false;
-		return (parse_face_push(dst, f));
+		return (parse_face_push(dst, &f));
 	}
 	else if ((f.n_sides = sscanf(line, "%d/%d/ %d/%d/ %d/%d/ %d/%d/",
 				&f.triplets[0][TRIPLET_V], &f.triplets[0][TRIPLET_VT],
 				&f.triplets[1][TRIPLET_V], &f.triplets[1][TRIPLET_VT],
 				&f.triplets[2][TRIPLET_V], &f.triplets[2][TRIPLET_VT],
 				&f.triplets[3][TRIPLET_V], &f.triplets[3][TRIPLET_VT]
-				)) >= 6)
+				) / 2) >= 3)
 	{
 		f.texture = true;
 		f.normal = false;
-		return (parse_face_push(dst, f));
+		return (parse_face_push(dst, &f));
 	}
 	else if ((f.n_sides = sscanf(line, "%d//%d %d//%d %d//%d %d//%d",
 				&f.triplets[0][TRIPLET_V], &f.triplets[0][TRIPLET_VN],
 				&f.triplets[1][TRIPLET_V], &f.triplets[1][TRIPLET_VN],
 				&f.triplets[2][TRIPLET_V], &f.triplets[2][TRIPLET_VN],
 				&f.triplets[3][TRIPLET_V], &f.triplets[3][TRIPLET_VN]
-				)) >= 6)
+				) / 2) >= 3)
 	{
 		f.texture = false;
 		f.normal = true;
-		return (parse_face_push(dst, f));
+		return (parse_face_push(dst, &f));
 	}
 	else if ((f.n_sides = sscanf(line, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d/",
 				&f.triplets[0][TRIPLET_V], &f.triplets[0][TRIPLET_VT], &f.triplets[0][TRIPLET_VN],
 				&f.triplets[1][TRIPLET_V], &f.triplets[1][TRIPLET_VT], &f.triplets[1][TRIPLET_VN],
 				&f.triplets[2][TRIPLET_V], &f.triplets[2][TRIPLET_VT], &f.triplets[2][TRIPLET_VN],
 				&f.triplets[3][TRIPLET_V], &f.triplets[3][TRIPLET_VT], &f.triplets[3][TRIPLET_VN]
-				)) >= 9)
+				) / 3) >= 3)
 	{
 		f.texture = true;
 		f.normal = true;
-		return (parse_face_push(dst, f));
+		return (parse_face_push(dst, &f));
 	}
 	else
 	{
@@ -277,6 +347,7 @@ t_wfobj	*wfobj_parse(FILE *stream)
 	if ((ret = malloc(sizeof(*ret))))
 	{
 		bzero(ret, sizeof(*ret));
+		ret->extreme_unset = true;
 		line = NULL;
 		size = 0;
 		linen = 1;

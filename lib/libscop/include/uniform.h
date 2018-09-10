@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 16:40:00 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 16:40:07 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/10 17:30:05 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ enum			e_uniform_type
 	E_UNIFORM_2INT,
 	E_UNIFORM_FLOAT,
 	E_UNIFORM_2FLOAT,
+	E_UNIFORM_3FLOAT,
 	E_UNIFORM_MAT4FLOAT,
 };
 
@@ -31,6 +32,7 @@ typedef union	u_uniform_val
 	int				i2[2];
 	float			f;
 	float			f2[2];
+	float			f3[3];
 	t_matrix const	*mat;
 }				t_uniform_val;
 

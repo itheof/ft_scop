@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 11:07:38 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/10 12:49:19 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/10 17:14:21 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ typedef struct	s_face
 {
 	int		triplets[MAX_POLYGON_SIDES][3];
 	int		n_sides;
-	t_bool	normal;
 	t_bool	texture;
+	t_bool	normal;
 }				t_face;
 
 typedef struct	s_wfobj
@@ -60,6 +60,9 @@ typedef struct	s_wfobj
 	t_list	*vn;
 	size_t	n_vn;
 	t_list	*f;
+	t_bool		extreme_unset;
+	t_vertex	min_vertex;
+	t_vertex	max_vertex;
 }				t_wfobj;
 
 t_wfobj	*wfobj_parse(FILE *stream);

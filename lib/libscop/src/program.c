@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 14:31:02 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 12:03:16 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/10 17:35:01 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ void	program_setf(t_program *p, char const *name, float value)
 void	program_set2f(t_program *p, char const *name, float val1, float val2)
 {
     glUniform2f(glGetUniformLocation(p->id, name), val1, val2);
+}
+
+void	program_set3f(t_program *p, char const *name, t_uniform_val val)
+{
+    glUniform3f(glGetUniformLocation(p->id, name), val.f3[0], val.f3[1], val.f3[2]);
 }
 
 void	program_setmat4f(t_program *p, char const *name, t_matrix const *mat)

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 16:40:36 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 16:40:37 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/10 17:32:36 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void			program_set2i(t_program *p, char const *name, int val1,
 void			program_setf(t_program *p, char const *name, float value);
 void			program_set2f(t_program *p, char const *name, float val1,
 		float val2);
+void			program_set3f(t_program *p, char const *name, t_uniform_val val);
 void			program_setmat4f(t_program *p, char const *name,
 		t_matrix const *mat);
 void			program_deinit(t_program *p);

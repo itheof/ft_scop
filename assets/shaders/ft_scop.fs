@@ -25,7 +25,7 @@ uniform sampler2D _texture1;
 void main()
 {
 	vec4	combined;
-	vec4	base_color = vec4(Color, Color, Color, 1.0);
+	vec4	base_color = vec4(Color, 0.4, 0.8, 1.0);
 
 	if (texture(_texture1, TexCoord) != vec4(1.0, 1.0, 1.0, 1.0))
 		combined = texture(_texture1, TexCoord);
