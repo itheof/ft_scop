@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/05 17:32:55 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 11:08:51 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,23 +75,25 @@ void	update_camera(t_bool init)
 static void	loop(void)
 {
 	double	time;
+	double	old_time;
 	size_t	frames;
 	char	title[256];
 
 	time = glfwGetTime();
+	old_time = glfwGetTime();
 	frames = 0;
 	while (!glfwWindowShouldClose(g_env.window))
 	{
 		if (g_env.mouse_held)
 			update_camera(false);
-		if (glfwGetTime() > time + 1)
+		if (old_time + 1 < time)
 		{
+			old_time = time;
 			snprintf(title, sizeof(title), "ft_scop - [FPS: %zu]", frames);
 			glfwSetWindowTitle(g_env.window, title);
 			frames = 0;
 		}
-		else
-			frames++;
+		frames++;
 		objects_update(glfwGetTime() - time);
 		time = glfwGetTime();
 		objects_render(g_env.camera);
