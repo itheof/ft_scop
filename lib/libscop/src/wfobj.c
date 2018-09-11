@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 10:41:37 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 11:08:18 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 15:06:52 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <ctype.h>
 #include <limits.h>
 #include "wfobj.h"
+
+#define WFOBJ_DEBUG_VAR "LIBSCOP_WFOBJ_DEBUG"
 
 struct	s_kw_handler
 {
@@ -36,8 +38,12 @@ static t_bool	unimplemented(t_wfobj *dst, char const *line, char const *kw)
 
 	(void)dst;
 	(void)line;
-	fprintf(stderr, "keyword %sunimplemented", kw);
-	return (false);
+	if (getenv(WFOBJ_DEBUG_VAR))
+	{
+		fprintf(stderr, "warning: keyword %sunimplemented", kw);
+		return (false);
+	}
+	return (true);
 }
 
 static void		update_extreme_vertex(t_wfobj *dst, t_vertex vertex)

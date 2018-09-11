@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "model.h"
 #include "wfobj.h"
 #include "libft/list.h"
@@ -19,47 +20,47 @@ static float const	g_colors[] = {
 };
 
 static float const	cube_vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.863,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.863,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.863,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.827,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.827,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.827,
+	-1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 0.863,
+	 1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.863,
+	 1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.863,
+	 1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.827,
+	-1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.827,
+	-1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 0.827,
 
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.753,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.753,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.753,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.663,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.663,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.663,
+	-1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 0.753,
+	 1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 0.753,
+	 1.0f,  1.0f,  1.0f,  1.0f, 1.0f, 0.753,
+	 1.0f,  1.0f,  1.0f,  1.0f, 1.0f, 0.663,
+	-1.0f,  1.0f,  1.0f,  0.0f, 1.0f, 0.663,
+	-1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 0.663,
 
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.502,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.502,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.502,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.412,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.412,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.412,
+	-1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.502,
+	-1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.502,
+	-1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.502,
+	-1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.412,
+	-1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 0.412,
+	-1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.412,
 
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.863,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.863,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.863,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.827,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.827,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.827,
+	 1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.863,
+	 1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.863,
+	 1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.863,
+	 1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.827,
+	 1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 0.827,
+	 1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.827,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.753,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.753,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.753,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.663,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.663,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.663,
+	-1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.753,
+	 1.0f, -1.0f, -1.0f,  1.0f, 1.0f, 0.753,
+	 1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 0.753,
+	 1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 0.663,
+	-1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 0.663,
+	-1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.663,
 
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.502,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.502,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.502,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.412,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.412,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.412
+	-1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.502,
+	 1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.502,
+	 1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.502,
+	 1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.412,
+	-1.0f,  1.0f,  1.0f,  0.0f, 0.0f, 0.412,
+	-1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.412
 };
 
 static t_model	fallback_model = { .path = NULL,
@@ -73,7 +74,8 @@ static t_model	fallback_model = { .path = NULL,
 		.x = 0,
 		.y = 0,
 		.z = 0
-	}
+	},
+	.scale = 1.0f
 };
 
 static void		fill_array_with_list(void *a, t_list *lst)
@@ -88,7 +90,6 @@ static void		fill_array_with_list(void *a, t_list *lst)
 		lst = lst->next;
 		i++;
 	}
-	fprintf(stderr, "copied %zu elems\n", i );
 }
 
 static void		transform_triangle(float *dst, t_face *f, int first_vertice, t_vertex *v_a, t_vertex_normal *vn_a, t_vertex_texture *vt_a, unsigned int colori)
@@ -102,8 +103,8 @@ static void		transform_triangle(float *dst, t_face *f, int first_vertice, t_vert
 		memcpy(dst + 3, vt_a[f->triplets[first_vertice][TRIPLET_VT] - 1].coord, 2 * sizeof(float));
 	else
 	{
-		dst[3] = 0.0f;
-		dst[4] = 0.0f;
+		dst[3] = v_a[f->triplets[first_vertice][TRIPLET_V] - 1].coord[2];
+		dst[4] = v_a[f->triplets[first_vertice][TRIPLET_V] - 1].coord[1];
 	}
 	dst[5] = color;
 	memcpy(dst + 6, v_a[f->triplets[first_vertice + 1][TRIPLET_V] - 1].coord, 3 * sizeof(float));
@@ -111,8 +112,8 @@ static void		transform_triangle(float *dst, t_face *f, int first_vertice, t_vert
 		memcpy(dst + 9, vt_a[f->triplets[first_vertice + 1][TRIPLET_VT] - 1].coord, 2 * sizeof(float));
 	else
 	{
-		dst[9] = 0.0f;
-		dst[10] = 0.0f;
+		dst[9] = v_a[f->triplets[first_vertice + 1][TRIPLET_V] - 1].coord[2];
+		dst[10] = v_a[f->triplets[first_vertice + 1][TRIPLET_V] - 1].coord[1];
 	}
 	dst[11] = color;
 	memcpy(dst + 12, v_a[f->triplets[(first_vertice + 2) % 4][TRIPLET_V] - 1].coord, 3 * sizeof(float));
@@ -120,8 +121,8 @@ static void		transform_triangle(float *dst, t_face *f, int first_vertice, t_vert
 		memcpy(dst + 15, vt_a[f->triplets[(first_vertice + 2) % 4][TRIPLET_VT] -1].coord, 2 *sizeof(float));
 	else
 	{
-		dst[15] = 0.0f;
-		dst[16] = 0.0f;
+		dst[15] = v_a[f->triplets[(first_vertice + 2) % 4][TRIPLET_V] -1].coord[2];
+		dst[16] = v_a[f->triplets[(first_vertice + 2) % 4][TRIPLET_V] -1].coord[1];
 	}
 	dst[17] = color;
 }
@@ -151,7 +152,6 @@ static t_bool	transform(t_model *dst, t_wfobj *obj)
 	static int			new_uid = FALLBACK_MODEL_UID + 1;
 
 	v_a = malloc(sizeof(*v_a) * obj->n_v);
-	fprintf(stderr, "malloced %zu bytes at %p\n", sizeof(*v_a) * obj->n_v, (void*)v_a);
 	vn_a = malloc(sizeof(*vn_a) * obj->n_vn);
 	vt_a = malloc(sizeof(*vt_a) * obj->n_vt);
 	if (!v_a || !vn_a || !vt_a)
@@ -205,10 +205,22 @@ static t_bool	transform(t_model *dst, t_wfobj *obj)
 	}
 
 	dst->offset.ndim = 3;
-	dst->offset.x = - (obj->max_vertex.coord[0] - obj->min_vertex.coord[0]) / 2;
-	dst->offset.y = - (obj->max_vertex.coord[1] - obj->min_vertex.coord[1]) / 2;
-	dst->offset.z = - (obj->max_vertex.coord[2] - obj->min_vertex.coord[2]) / 2;
+	dst->offset.x = (obj->max_vertex.coord[0] - obj->min_vertex.coord[0]) / 2.0f - obj->max_vertex.coord[0];
+	dst->offset.y = (obj->max_vertex.coord[1] - obj->min_vertex.coord[1]) / 2.0f - obj->max_vertex.coord[1];
+	dst->offset.z = (obj->max_vertex.coord[2] - obj->min_vertex.coord[2]) / 2.0f - obj->max_vertex.coord[2];
+	double	absmax;
 
+	absmax = fabs(obj->max_vertex.coord[0] - obj->min_vertex.coord[0]);
+	if (fabs(obj->max_vertex.coord[1] - obj->min_vertex.coord[1]) > absmax)
+		absmax = fabs(obj->max_vertex.coord[1] - obj->min_vertex.coord[1]);
+	if (fabs(obj->max_vertex.coord[2] - obj->min_vertex.coord[2]) > absmax)
+		absmax = fabs(obj->max_vertex.coord[2] - obj->min_vertex.coord[2]);
+	dst->scale = 2.0f / absmax;
+	if (getenv(MODEL_DEBUG_VAR))
+		fprintf(stderr, "computed offset x: %f, y: %f, z: %f with a scale "
+				"factor of %f\n", dst->offset.x, dst->offset.y, dst->offset.z,
+				absmax);
+	/*FIXME  scale is bugued for some reason */
 	return (true);
 }
 
@@ -234,33 +246,28 @@ static t_bool	load(t_model *dst, char const *path)
 	return (success);
 }
 
-static t_model	*new_from_path_fallback(void)
-{
-	fprintf(stderr, "model warning: loading fallback cube\n");
-	return (&fallback_model);
-}
-
 static t_model	*new_from_path(char const *path)
 {
 	t_model	*ret;
 
-	fprintf(stderr, "model warning: attempting to load %s when not fully implemented yet\n", path);
 	if (path != NULL)
 	{
 		if (!(ret = malloc(sizeof(*ret))))
 		{
 			perror("load_from_path: malloc");
-			return (new_from_path_fallback());
+			fprintf(stderr, "model warning: loading fallback cube\n");
+			return (&fallback_model);
 		}
 		else if (!load(ret, path))
 		{
 			free(ret);
-			return (new_from_path_fallback());
+			fprintf(stderr, "model warning: loading fallback cube\n");
+			return (&fallback_model);
 		}
 		else
 			return (ret);
 	}
-	return (new_from_path_fallback());
+	return (&fallback_model);
 }
 
 t_model	*model_load(char const *path)
@@ -298,7 +305,7 @@ void	model_unload(t_model *m)
     glDeleteBuffers(1, &m->vbo);
 	if (m->uid != FALLBACK_MODEL_UID)
 	{
-
-		fprintf(stderr, "model error: attempting to unload model when not implemented yet\n");
+		free((void*)m->vertices);
+		free(m);
 	}
 }

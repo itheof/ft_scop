@@ -9,12 +9,8 @@
 extern int		g_cube_index;
 extern t_cube	*g_cubes[MAX_CUBES];
 
-static t_texture	g_tex_wall = {
-	.path = TEXTURES_DIR "wall.ppm",
-};
-
-static t_texture	g_tex_face = {
-	.path = TEXTURES_DIR "awesomeface.ppm",
+static t_texture	g_texture = {
+	.path = TEXTURES_DIR "norminet.ppm",
 };
 
 static t_uniform_val	cube_texture_ratio(void *obj)
@@ -32,18 +28,6 @@ static t_uniform_val	cube_is_current(void *obj)
 	return (ret);
 }
 
-static t_uniform_val	cube_get_offset(void *obj)
-{
-	t_uniform_val	ret;
-	t_model			*model;
-
-	model = ((t_cube *)obj)->obj.model;
-	ret.f3[0] = model->offset.x;
-	ret.f3[1] = model->offset.y;
-	ret.f3[2] = model->offset.z;
-	return (ret);
-}
-
 static t_uniform const	g_uniforms[] = {
 	{
 		.type = E_UNIFORM_BOOL,
@@ -54,11 +38,6 @@ static t_uniform const	g_uniforms[] = {
 		.type = E_UNIFORM_FLOAT,
 		.name = "texture_ratio",
 		.resolve = &cube_texture_ratio,
-	},
-	{
-		.type = E_UNIFORM_3FLOAT,
-		.name = "_offset",
-		.resolve = &cube_get_offset
 	},
 	{
 		.type = E_UNIFORM_END,
@@ -115,13 +94,11 @@ static void	cube_init(void *obj)
 	t_cube	*cube;
 
 	cube = obj;
-	fprintf(stdout, "spawning a new cube n%d\n", count);
 	cube_set_defaults(cube);
 	cube->uid = count++;
 	cube->obj.textures = malloc(sizeof(*cube->obj.textures) * 3);
-	cube->obj.textures[0] = &g_tex_wall;
-	cube->obj.textures[1] = &g_tex_face;
-	cube->obj.textures[2] = NULL;
+	cube->obj.textures[0] = &g_texture;
+	cube->obj.textures[1] = NULL;
 	/* textures probably should not be set there*/
 }
 

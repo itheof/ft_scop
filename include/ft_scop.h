@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:17:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/05 17:29:34 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 11:53:42 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,10 @@ void	update_camera(t_bool init);
 void	push_cube(char const *model_path);
 void	cube_focus_next(void);
 void	cube_focus_prev(void);
+
+/* functions that do not belong in the header, but 5 functions max */
+
+void	key_callback(GLFWwindow *window,
+		int key, int scancode, int action, int mods);
 
 #endif

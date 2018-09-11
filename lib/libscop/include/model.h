@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 14:17:45 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/10 17:22:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 15:06:40 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include "libft/stdbool.h"
 # include "vector.h"
+
+# define MODEL_DEBUG_VAR "LIBSCOP_MODEL_DEBUG"
 
 typedef struct	s_model
 {
@@ -27,6 +29,7 @@ typedef struct	s_model
 	unsigned			vbo;
 	t_bool				gl_loaded;
 	t_vector			offset;
+	float				scale;
 }				t_model;
 
 t_model			*model_load(char const *path);

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:36:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/05 17:57:13 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 15:16:52 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	push_cube(char const *model_path)
 {
 	t_object	newmodel;
 
+	fprintf(stderr, "spawning new %s object\n", (model_path) ? model_path : "fallback");
 	memcpy(&newmodel, &g_cube_obj, sizeof(newmodel));
 	newmodel.model_path = model_path;
 	if (g_cube_index + 1 >= MAX_CUBES)

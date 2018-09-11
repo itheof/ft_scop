@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 14:00:28 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/04 17:21:11 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 11:38:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,8 @@ t_bool	libscop_init(void (* (*get_proc_addr)(const char *))(void))
 		fprintf(stderr, "Failed to initialize GLAD\n");
         return (false);
     }
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0x00 / 255.0f, 0x8B / 255.0f, 0x8B / 255.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
-/*	if (!program_init(&g_program))
-	{
-		ft_putendl_fd("FATAL: failed to compile shaders", 2);
-		return (false);
-	}*/
 	return (true);
 }
 

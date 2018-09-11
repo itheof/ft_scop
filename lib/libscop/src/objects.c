@@ -61,9 +61,10 @@ void	*objects_push(t_object const *obj)
 		{
 			fprintf(stderr, "texture_init failed\n");
 			;//TODO: error handling
-		}
+		}/*
 		else
-			fprintf(stderr, "loaded new texture\n");
+			;
+			fprintf(stderr, "loaded new texture\n");*/
 		i++;
 	}
 	return (ret);
@@ -117,6 +118,7 @@ void	objects_render(t_camera camera)
 {
 	static t_matrix	*view = NULL;
 	static t_matrix	*model = NULL;
+	t_uniform_val	buf;
 	t_object		*object;
 	size_t			i;
 
@@ -157,6 +159,11 @@ void	objects_render(t_camera camera)
 		program_setmat4f(object->program, "_model", model);
 		program_setmat4f(object->program, "_view", view);
 		program_setmat4f(object->program, "_projection", g_projection);
+		buf.f3[0] = object->model->offset.x;
+		buf.f3[1] = object->model->offset.y;
+		buf.f3[2] = object->model->offset.z;
+		program_set3f(object->program, "_model_offset", buf);
+		program_setf(object->program, "_model_scale", object->model->scale);
 
 		/* setting program uniforms */
 
