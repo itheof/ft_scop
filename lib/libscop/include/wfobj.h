@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 11:07:38 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/10 17:14:21 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 11:04:14 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,16 @@ typedef struct	s_face
 typedef struct	s_wfobj
 {
 	t_list	*v;
+	t_list	*v_tail;
 	size_t	n_v;
 	t_list	*vt;
+	t_list	*vt_tail;
 	size_t	n_vt;
 	t_list	*vn;
+	t_list	*vn_tail;
 	size_t	n_vn;
 	t_list	*f;
+	t_list	*f_tail;
 	t_bool		extreme_unset;
 	t_vertex	min_vertex;
 	t_vertex	max_vertex;

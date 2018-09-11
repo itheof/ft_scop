@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 10:41:37 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/10 18:37:19 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 11:08:18 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,16 @@ static t_bool	parse_vertex(t_wfobj *dst, char const *line, char const *kw)
 			perror("parse_vertex malloc");
 			return (false);
 		}
-		ft_lstpushback(&dst->v, lst);
+		if (dst->v_tail)
+		{
+			dst->v_tail->next = lst;
+			dst->v_tail = lst;
+		}
+		else
+		{
+			dst->v = lst;
+			dst->v_tail = lst;
+		}
 		dst->n_v++;
 	}
 	update_extreme_vertex(dst, vertex);
@@ -114,7 +123,16 @@ static t_bool	parse_vertex_normal(t_wfobj *dst, char const *line,
 		perror("parse_vertex_normal malloc");
 		return (false);
 	}
-	ft_lstpushback(&dst->vn, lst);
+	if (dst->vn_tail)
+	{
+		dst->vn_tail->next = lst;
+		dst->vn_tail = lst;
+	}
+	else
+	{
+		dst->vn = lst;
+		dst->vn_tail = lst;
+	}
 	dst->n_vn++;
 	return (true);
 }
@@ -143,7 +161,16 @@ static t_bool	parse_vertex_texture(t_wfobj *dst, char const *line,
 		return (false);
 	}
 	(void)kw;
-	ft_lstpushback(&dst->vt, lst);
+	if (dst->vt_tail)
+	{
+		dst->vt_tail->next = lst;
+		dst->vt_tail = lst;
+	}
+	else
+	{
+		dst->vt = lst;
+		dst->vt_tail = lst;
+	}
 	dst->n_vt++;
 	return (true);
 }
@@ -197,7 +224,16 @@ static t_bool	parse_face_push(t_wfobj *dst, t_face *f)
 		fprintf(stderr, "parse_face_push malloc");
 		return (false);
 	}
-	ft_lstpushback(&dst->f, lst);
+	if (dst->f_tail)
+	{
+		dst->f_tail->next = lst;
+		dst->f_tail = lst;
+	}
+	else
+	{
+		dst->f = lst;
+		dst->f_tail = lst;
+	}
 	return (true);
 }
 
@@ -214,6 +250,17 @@ static t_bool	parse_face(t_wfobj *dst, char const *line, char const *kw)
 	{
 		f.normal = false;
 		f.texture = false;
+		return (parse_face_push(dst, &f));
+	}
+	else if ((f.n_sides = sscanf(line, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d/",
+				&f.triplets[0][TRIPLET_V], &f.triplets[0][TRIPLET_VT], &f.triplets[0][TRIPLET_VN],
+				&f.triplets[1][TRIPLET_V], &f.triplets[1][TRIPLET_VT], &f.triplets[1][TRIPLET_VN],
+				&f.triplets[2][TRIPLET_V], &f.triplets[2][TRIPLET_VT], &f.triplets[2][TRIPLET_VN],
+				&f.triplets[3][TRIPLET_V], &f.triplets[3][TRIPLET_VT], &f.triplets[3][TRIPLET_VN]
+				) / 3) >= 3)
+	{
+		f.texture = true;
+		f.normal = true;
 		return (parse_face_push(dst, &f));
 	}
 	else if ((f.n_sides = sscanf(line, "%d// %d// %d// %d//",
@@ -243,17 +290,6 @@ static t_bool	parse_face(t_wfobj *dst, char const *line, char const *kw)
 				) / 2) >= 3)
 	{
 		f.texture = false;
-		f.normal = true;
-		return (parse_face_push(dst, &f));
-	}
-	else if ((f.n_sides = sscanf(line, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d/",
-				&f.triplets[0][TRIPLET_V], &f.triplets[0][TRIPLET_VT], &f.triplets[0][TRIPLET_VN],
-				&f.triplets[1][TRIPLET_V], &f.triplets[1][TRIPLET_VT], &f.triplets[1][TRIPLET_VN],
-				&f.triplets[2][TRIPLET_V], &f.triplets[2][TRIPLET_VT], &f.triplets[2][TRIPLET_VN],
-				&f.triplets[3][TRIPLET_V], &f.triplets[3][TRIPLET_VT], &f.triplets[3][TRIPLET_VN]
-				) / 3) >= 3)
-	{
-		f.texture = true;
 		f.normal = true;
 		return (parse_face_push(dst, &f));
 	}
