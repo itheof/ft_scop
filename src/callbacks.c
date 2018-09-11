@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 11:45:18 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 11:52:30 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 16:02:09 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,30 @@ void			window_refresh_callback(GLFWwindow *window)
 	glfwSwapBuffers(window);
 }
 
+void			drop_callback(GLFWwindow *window, int nfiles, char const **paths)
+{
+
+	char const	*ext;
+
+	(void)window;
+	for (int i = 0; i < nfiles; i++)
+	{
+		ext = ft_strrchr(paths[i], '.');
+		if (ext)
+		{
+			ext++;
+			if (!strcmp(ext, "obj"))
+				push_cube(paths[i]);
+			else if (!strcmp(ext, "ppm"))
+				fprintf(stderr, "ppm hot loading not implemented yet\n");
+			else
+				fprintf(stderr, "unsupported file extension: %s. Skipping\n", ext);
+		}
+		else
+			fprintf(stderr, "unsupported file: %s. Skipping\n", paths[i]);
+	}
+}
+
 void			register_callbacks(void)
 {
 	glfwSetKeyCallback(g_env.window, key_callback);
@@ -58,4 +82,5 @@ void			register_callbacks(void)
 	glfwSetMouseButtonCallback(g_env.window, mouse_button_callback);
 	glfwSetFramebufferSizeCallback(g_env.window, framebuffer_callback);
 	glfwSetWindowRefreshCallback(g_env.window, window_refresh_callback);
+	glfwSetDropCallback(g_env.window, drop_callback);
 }

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 15:15:40 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 16:02:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,7 @@ int			main(int argc, char *argv[])
 
 	if (!init(&g_env))
 		return (-1);
-	if (argc == 1)
-		push_cube(NULL);
-	else
+	if (argc != 1)
 	{
 		i = 1;
 		while (i < argc)
