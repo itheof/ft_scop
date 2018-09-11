@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:36:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 15:16:52 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 17:05:54 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 
 int		g_cube_index = -1;
 t_cube	*g_cubes[MAX_CUBES] = { NULL };
+
+t_cube	*cube_get_current(void)
+{
+	if (g_cube_index == -1)
+		return (NULL);
+	return (g_cubes[g_cube_index]);
+}
 
 void	cube_focus_next(void)
 {

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 11:45:18 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 16:02:09 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 16:36:10 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include "cube.h"
 
 extern t_env	g_env;
-extern int		g_cube_index;
-extern t_cube	*g_cubes[MAX_CUBES];
 
 static void		scroll_callback(GLFWwindow *window,
 		double xoffset, double yoffset)
@@ -53,11 +51,12 @@ void			window_refresh_callback(GLFWwindow *window)
 
 void			drop_callback(GLFWwindow *window, int nfiles, char const **paths)
 {
-
 	char const	*ext;
+	int			i;
 
 	(void)window;
-	for (int i = 0; i < nfiles; i++)
+	i = 0;
+	while (i < nfiles)
 	{
 		ext = ft_strrchr(paths[i], '.');
 		if (ext)
@@ -72,6 +71,7 @@ void			drop_callback(GLFWwindow *window, int nfiles, char const **paths)
 		}
 		else
 			fprintf(stderr, "unsupported file: %s. Skipping\n", paths[i]);
+		i++;
 	}
 }
 

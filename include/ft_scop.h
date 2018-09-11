@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 13:17:01 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 11:53:42 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 17:03:06 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	update_camera(t_bool init);
 void	push_cube(char const *model_path);
 void	cube_focus_next(void);
 void	cube_focus_prev(void);
+t_cube	*cube_get_current(void);
 
 /* functions that do not belong in the header, but 5 functions max */
 

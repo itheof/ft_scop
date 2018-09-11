@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 09:12:21 by tvallee           #+#    #+#             */
-/*   Updated: 2018/09/11 16:02:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/09/11 16:33:42 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static void	loop(void)
 	}
 }
 
-int			main(int argc, char *argv[])
+int			main(int argc, char const *argv[])
 {
 	int	i;
 
@@ -112,7 +112,10 @@ int			main(int argc, char *argv[])
 	{
 		i = 1;
 		while (i < argc)
-			push_cube(argv[i++]);
+		{
+			push_cube(argv[i]);
+			i++;
+		}
 	}
 	loop();
 	cleanup();
