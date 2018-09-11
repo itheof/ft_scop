@@ -4,3 +4,4 @@ build
 ft_scop
 **/*.swp
 lib/glad
+ressources/obj
