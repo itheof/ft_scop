@@ -10,12 +10,15 @@
 #define FALLBACK_MODEL_UID 0
 
 static float const	g_colors[] = {
-	0.863f,
+/*	0.863f,
 	0.827f,
+	0.79f,
 	0.753f,
-	0.663f,
-	0.502f,
-	0.412f,
+	0.70f,*/
+	0.6f,
+	0.5f,
+	0.4f,
+	0.3f,
 	0.2f,
 };
 
@@ -132,12 +135,12 @@ static float	*transform_face(float *dst, t_face *f, t_vertex *v_a, t_vertex_norm
 	static unsigned int	colori = 0;
 
 
-	transform_triangle(dst, f, 0, v_a, vn_a, vt_a, colori % 6);
+	transform_triangle(dst, f, 0, v_a, vn_a, vt_a, colori % 5);
 	dst += 18;
 	//fprintf(stderr, "hmmm ndim: %d, %d %d %d %d", f->);
 	if (f->n_sides == 4)
 	{
-		transform_triangle(dst, f, 2, v_a, vn_a, vt_a, colori % 6);
+		transform_triangle(dst, f, 2, v_a, vn_a, vt_a, colori % 5);
 		dst += 18;
 	}
 	colori++;

@@ -24,7 +24,7 @@ uniform sampler2D _texture0;
 void main()
 {
 	vec4	combined;
-	vec4	base_color = vec4(Color, 0.4, 0.8, 1.0);
+	vec4	base_color = vec4(Color, Color, Color, 1.0);
 
 	combined = mix(base_color, texture(_texture0, TexCoord), texture_ratio);
 	if (is_selected)
