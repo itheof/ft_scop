@@ -206,6 +206,9 @@ static t_bool	transform(t_model *dst, t_wfobj *obj)
 		tmp = transform_face(tmp, current->content, v_a, vn_a, vt_a);
 		current = current->next;
 	}
+	free(v_a);
+	free(vt_a);
+	free(vn_a);
 
 	dst->offset.ndim = 3;
 	dst->offset.x = (obj->max_vertex.coord[0] - obj->min_vertex.coord[0]) / 2.0f - obj->max_vertex.coord[0];
